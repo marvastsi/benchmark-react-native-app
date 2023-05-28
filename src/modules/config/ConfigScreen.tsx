@@ -1,17 +1,66 @@
-import { useRoute } from '@react-navigation/native';
+import { Text } from '@react-native-material/core';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Text, View } from 'react-native';
-
-type Person = {name: string, baseUrl: string};
+import { View } from 'react-native';
+import Snackbar from 'react-native-snackbar';
+import FormButton from '../../components/FormButton';
+import FormInput from '../../components/FormInput';
+import InputFile from '../../components/ImputFile';
+import styles from '../../styles';
 
 const ConfigScreen = () => {
-  const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const navigation = useNavigation();
+
+  const [testLoad, setTextLoad] = React.useState('');
+  const [mediaFile, setMediaFile] = React.useState('');
+  const [uploadFile, setUploadFile] = React.useState('');
+  const [downloadFile, setDownloadFile] = React.useState('');
+  const [serverUrl, setServerUrl] = React.useState('');
+  const [scenario, setScenario] = React.useState(0);
+
+  const handleLogin = () => {
+    Snackbar.show({
+      text: `implement this: Save Config`,
+      duration: Snackbar.LENGTH_LONG,
+    });
+  }
 
   return (
-    <View style={{ flex: 1, paddingTop: 12, paddingHorizontal: 10 }}>
-      <Text style={{ fontSize: 18, paddingBottom: 12 }}>Name: {name}</Text>
-      <Text style={{ fontSize: 18 }}>Base Url: {baseUrl}</Text>
+    <View style={styles.container}>
+      <FormInput
+        keyboardType='numeric'
+        onChangeText={setTextLoad}
+        value={testLoad}
+        placeholder='Executions'
+      />
+      <InputFile
+        keyboardType='url'
+        value={mediaFile}
+        onChangeText={setMediaFile}
+        placeholder='Media file' />
+      <InputFile
+        keyboardType='url'
+        value={uploadFile}
+        onChangeText={setUploadFile}
+        placeholder='Upload file' />
+      <FormInput
+        onChangeText={setDownloadFile}
+        value={downloadFile}
+        placeholder='Download file name'
+      />
+      <FormInput
+        keyboardType='url'
+        onChangeText={setServerUrl}
+        value={serverUrl}
+        placeholder='Server URL'
+      />
+      <Text style={{ fontSize: 14 }}>
+        If a specific scenario was selected, then only this scenario will be executed N times, where N = numberOfExecutions
+      </Text>
+      <FormButton
+        title='Save Config'
+        onPress={handleLogin}
+      />
     </View>
   );
 };

@@ -28,6 +28,11 @@ const DATA = [
     name: 'Media',
     base_url: 'http://localhost:3000/api',
   },
+  {
+    id: 6,
+    name: 'AppConfig',
+    base_url: 'http://localhost:3000/api',
+  },
 ];
 
 type Person = {id: number, name: string, base_url: string};

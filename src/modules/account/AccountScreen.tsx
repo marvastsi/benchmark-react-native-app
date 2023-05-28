@@ -1,6 +1,7 @@
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { Text, View } from 'react-native';
+import styles from '../../styles';
 
 type Person = {name: string, baseUrl: string};
 
@@ -9,9 +10,9 @@ const AccountScreen = () => {
   const { name, baseUrl: baseUrl } = route.params as Person;
 
   return (
-    <View style={{ flex: 1, paddingTop: 12, paddingHorizontal: 10 }}>
-      <Text style={{ fontSize: 18, paddingBottom: 12 }}>Name: {name}</Text>
-      <Text style={{ fontSize: 18 }}>Base Url: {baseUrl}</Text>
+    <View style={styles.container}>
+      <Text style={styles.label}>Name: {name}</Text>
+      <Text style={styles.field}>Base Url: {baseUrl}</Text>
     </View>
   );
 };
