@@ -1,18 +1,36 @@
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import styles from '../../styles';
-
-type Person = {name: string, baseUrl: string};
+import Snackbar from 'react-native-snackbar';
+import FormButton from '../../components/FormButton';
+import FormInput from '../../components/FormInput';
 
 const UploadScreen = () => {
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const { serverUrl } = route.params as Config;
+
+  const [file, setFile] = React.useState('');
+
+  const handleUpload = () => {
+    Snackbar.show({
+      text: `Implement this: Upload ${file || 'fileXXX'}`,
+      duration: Snackbar.LENGTH_LONG,
+    });
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Name: {name}</Text>
-      <Text style={styles.field}>Base Url: {baseUrl}</Text>
+      <FormInput
+        onChangeText={setFile}
+        value={file}
+        placeholder='upload file'
+        secureTextEntry={true}
+      />
+      <FormButton
+        title='Upload'
+        onPress={handleUpload}
+      />
     </View>
   );
 };

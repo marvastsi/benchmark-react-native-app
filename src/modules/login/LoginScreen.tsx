@@ -1,25 +1,29 @@
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import FormButton from '../../components/FormButton';
 import FormInput from '../../components/FormInput';
+import HttpClient from '../../http/services/HttpClient';
 import styles from '../../styles';
-import InputFile from '../../components/ImputFile';
-
-type Person = { name: string, baseUrl: string };
+import { saveToken } from '../../commons/CredentialStorage';
 
 const LoginScreen = () => {
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const { serverUrl } = route.params as Config;
 
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [file, setFile] = React.useState('');
 
-  const handleLogin = () => {
+
+  const handleLogin = async () => {
+    const client = new HttpClient(serverUrl);
+    const token = await client.login({ username, password })
+
+    saveToken(token);
+
     Snackbar.show({
-      text: `LOGIN: ${username || 'u'} : ${password || 'p'}`,
+      text: `Login => ${token}`,
       duration: Snackbar.LENGTH_LONG,
     });
   }

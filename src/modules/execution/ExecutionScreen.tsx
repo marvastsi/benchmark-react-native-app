@@ -35,18 +35,18 @@ const DATA = [
   },
 ];
 
-type Person = {id: number, name: string, base_url: string};
+type ExecutionParam = { id: number, name: string, base_url: string };
 
 const ExecutionScreen = () => {
-const navigation = useNavigation();
-  const renderListItems = ({ item }: {item: Person}) => {
+  const navigation = useNavigation();
+  const renderListItems = ({ item }: { item: ExecutionParam }) => {
     return (
       <Pressable
         onPress={() =>
-          navigation.navigate(`${item.name}`, {
+          navigation.navigate(item.name, {
             name: item.name,
             baseUrl: item.base_url,
-          })
+          } )
         }
       >
         <Text
