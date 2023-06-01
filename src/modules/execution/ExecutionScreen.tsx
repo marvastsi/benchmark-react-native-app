@@ -6,47 +6,43 @@ const DATA = [
   {
     id: 1,
     name: 'Login',
-    base_url: 'http://localhost:3000/api',
+    baseUrl: 'http://192.168.100.115:3000/api',
   },
   {
     id: 2,
     name: 'Account',
-    base_url: 'http://localhost:3000/api',
+    baseUrl: 'http://192.168.100.115:3000/api',
   },
   {
     id: 3,
     name: 'Download',
-    base_url: 'http://localhost:3000/api',
+    baseUrl: 'http://192.168.100.115:3000/api',
   },
   {
     id: 4,
     name: 'Upload',
-    base_url: 'http://localhost:3000/api',
+    baseUrl: 'http://192.168.100.115:3000/api',
   },
   {
     id: 5,
     name: 'Media',
-    base_url: 'http://localhost:3000/api',
+    baseUrl: 'http://192.168.100.115:3000/api',
   },
   {
     id: 6,
     name: 'AppConfig',
-    base_url: 'http://localhost:3000/api',
+    baseUrl: 'http://192.168.100.115:3000/api',
   },
 ];
 
-type ExecutionParam = { id: number, name: string, base_url: string };
+export type ExecutionParam = { id: number, name: string, baseUrl: string };
 
 const ExecutionScreen = () => {
   const navigation = useNavigation();
   const renderListItems = ({ item }: { item: ExecutionParam }) => {
     return (
       <Pressable
-        onPress={() =>
-          navigation.navigate(item.name, {
-            name: item.name,
-            baseUrl: item.base_url,
-          } )
+        onPress={() => navigation.navigate(item.name, item)
         }
       >
         <Text
