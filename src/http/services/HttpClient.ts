@@ -25,7 +25,7 @@ class HttpClient {
 
             return (response.data as Token);
         } catch (error) {
-            console.log(`Login Error: ${error}`);
+            console.log(`Login Error: ${error}: ${JSON.stringify(error)}`);
         }
     }
 
@@ -38,7 +38,8 @@ class HttpClient {
             );
             return (response.data as AccountCreated);
         } catch (error) {
-            console.log(`Account save Error: ${error}`);
+            console.log(`Account save Error: ${error}: ${JSON.stringify(error)}`);
+            // throw new HttpException(error.message);
         }
     }
 
@@ -51,7 +52,7 @@ class HttpClient {
             );
             return (response.data as UploadFile);
         } catch (error) {
-            console.log(`Upload Error: ${error}`);
+            console.log(`Upload Error: ${error}: ${JSON.stringify(error)}`);
         }
     }
 
@@ -63,7 +64,7 @@ class HttpClient {
             );
             return response.data;
         } catch (error) {
-            console.log(`Download Error: ${error}`);
+            console.log(`Download Error: ${error}: ${JSON.stringify(error)}`);
         }
     }
 

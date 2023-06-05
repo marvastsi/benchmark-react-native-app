@@ -16,8 +16,8 @@ const InputFile = (props: TextInputProps) => {
                 editable={false}
             />
             <IconButton
-            style={styles.iconButton}
-                icon={props => <Icon style={{color: 'white'}} name="folder" {...props} />}
+                style={styles.iconButton}
+                icon={props => <Icon style={{ color: 'white' }} name="folder" {...props} />}
                 onPress={() => {
                     Snackbar.show({
                         text: 'Implement this to open files',
@@ -37,12 +37,11 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         fontSize: 18,
         alignItems: 'flex-start',
-        flexDirection:'row'
+        flexDirection: 'row'
     },
     textInput: {
         height: 46,
         width: '83%',
-        alignSelf: 'flex-start',
         backgroundColor: 'white',
         borderBottomWidth: 1,
         borderBottomColor: 'darkgrey',
