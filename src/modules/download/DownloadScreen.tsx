@@ -1,17 +1,22 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
+import { ProgressBar } from '@react-native-community/progress-bar-android';
 import { View } from 'react-native';
 import Snackbar from 'react-native-snackbar';
 import FormButton from '../../components/FormButton';
 import FormInput from '../../components/FormInput';
 import styles from '../../styles';
+import { ExecutionParam } from '../execution/ExecutionScreen';
 
 type Person = { name: string, baseUrl: string };
 
 const DownloadScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const { baseUrl } = route.params as ExecutionParam;
 
+  const [inProgress, setInProgress] = React.useState(false);
+  
   const [filename, setFilename] = React.useState('');
 
   const handlDownload = () => {
@@ -29,6 +34,11 @@ const DownloadScreen = () => {
         placeholder='download file'
         secureTextEntry={true}
       />
+      <ProgressBar
+          indeterminate={true}
+          styleAttr='Large'
+          animating={inProgress}
+        />
       <FormButton
         title='Download'
         onPress={handlDownload}

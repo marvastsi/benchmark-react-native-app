@@ -2,8 +2,8 @@ interface Account {
     firstName: string;
     lastName?: string;
     email: string;
-    phoneNumber: string;
     phoneCountryCode: string;
+    phoneNumber: string;
     active: boolean;
     notification: boolean;
     username: string;
@@ -11,5 +11,5 @@ interface Account {
 }
 
 interface AccountCreated {
-    id: string;
+    accountId: string;
 }

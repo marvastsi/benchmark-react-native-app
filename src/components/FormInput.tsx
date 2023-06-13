@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderBottomWidth: 1,
         borderBottomColor: 'darkgrey',
-        borderRadius: 6,
         marginVertical: 10,
         fontSize: 18,
         alignItems: 'flex-start',

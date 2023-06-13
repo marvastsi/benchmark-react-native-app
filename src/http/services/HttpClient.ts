@@ -36,6 +36,7 @@ class HttpClient {
                 account,
                 { headers: HEADERS },
             );
+
             return (response.data as AccountCreated);
         } catch (error) {
             console.log(`Account save Error: ${error}: ${JSON.stringify(error)}`);

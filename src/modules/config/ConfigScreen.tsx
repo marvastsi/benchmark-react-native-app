@@ -1,4 +1,5 @@
 import { Text } from '@react-native-material/core';
+import { ProgressBar } from '@react-native-community/progress-bar-android';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
@@ -10,7 +11,9 @@ import styles from '../../styles';
 
 const ConfigScreen = () => {
   const navigation = useNavigation();
-
+  
+  const [inProgress, setInProgress] = React.useState(false);
+  
   const [testLoad, setTextLoad] = React.useState('');
   const [mediaFile, setMediaFile] = React.useState('');
   const [uploadFile, setUploadFile] = React.useState('');
@@ -57,6 +60,11 @@ const ConfigScreen = () => {
       <Text style={{ fontSize: 14 }}>
         If a specific scenario was selected, then only this scenario will be executed N times, where N = numberOfExecutions
       </Text>
+      <ProgressBar
+          indeterminate={true}
+          styleAttr='Large'
+          animating={inProgress}
+        />
       <FormButton
         title='Save Config'
         onPress={handleLogin}

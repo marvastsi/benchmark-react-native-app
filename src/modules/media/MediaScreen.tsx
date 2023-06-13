@@ -1,19 +1,29 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { ProgressBar } from '@react-native-community/progress-bar-android';
 import React from 'react';
 import { Text, View } from 'react-native';
 import styles from '../../styles';
+import { ExecutionParam } from '../execution/ExecutionScreen';
 
 type Person = {name: string, baseUrl: string};
 
 const MediaScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const { baseUrl } = route.params as ExecutionParam;
+
+  const [inProgress, setInProgress] = React.useState(false);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Name: {name}</Text>
       <Text style={styles.field}>Base Url: {baseUrl}</Text>
+      <ProgressBar
+          indeterminate={true}
+          styleAttr='Large'
+          animating={inProgress}
+        />
     </View>
+    
   );
 };
 
