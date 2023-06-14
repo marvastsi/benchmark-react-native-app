@@ -9,11 +9,13 @@ import FormInput from '../../components/FormInput';
 import HttpClient from '../../http/services/HttpClient';
 import styles from '../../styles';
 import { ExecutionParam } from '../execution/ExecutionScreen';
+import { ActivityIndicator } from '@react-native-material/core';
+import { LENGTH_MEDIUM } from '../../commons/Constants';
 
 
 const LoginScreen = () => {
   const route = useRoute();
-  const [inProgress, setInProgress] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   // const { serverUrl } = route.params as Config;
   const { baseUrl } = route.params as ExecutionParam;
@@ -21,21 +23,27 @@ const LoginScreen = () => {
   const [password, setPassword] = React.useState('');
 
   const handleLogin = async () => {
-    setInProgress(true);
-
-    const client = new HttpClient(baseUrl);
-    const token = await client.login({ username, password })
-
-    saveToken(token);
+    setLoading(true);
+    try {
+      const client = new HttpClient(baseUrl);
+      const token = await client.login({ username, password });
+        if (token) {
+          saveToken(token);
+          Snackbar.show({
+            text: `Login Success: ${JSON.stringify(token)}`,
+            duration: Snackbar.LENGTH_LONG,
+          });
+        }
+    } catch (error) {
+        Snackbar.show({
+          text: `Login Error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+    }
 
     setTimeout(() => {
-      Snackbar.show({
-        text: `Login => ${JSON.stringify(token)}`,
-        duration: Snackbar.LENGTH_LONG,
-      });
-    }, 3000);
-
-    setInProgress(false);
+        setLoading(false);
+    }, LENGTH_MEDIUM)
   }
 
   return (
@@ -51,11 +59,7 @@ const LoginScreen = () => {
         placeholder='password'
         secureTextEntry={true}
       />
-      <ProgressBar
-        indeterminate={true}
-        styleAttr='Large'
-        animating={inProgress}
-      />
+      <ActivityIndicator color='teal' size='large' animating={loading} />
       <FormButton
         title='Login'
         onPress={handleLogin}

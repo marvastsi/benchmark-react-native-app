@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 
 const HEADERS = {
     Accept: 'application/json',
@@ -23,9 +23,11 @@ class HttpClient {
                 { headers: HEADERS }
             );
 
+            console.log(`Login END`);
             return (response.data as Token);
         } catch (error) {
-            console.log(`Login Error: ${error}: ${JSON.stringify(error)}`);
+            console.log(`Login Error: ${error}`);
+            throw { status: error.response!.status, message: error.message } as HttpException;
         }
     }
 
@@ -40,7 +42,7 @@ class HttpClient {
             return (response.data as AccountCreated);
         } catch (error) {
             console.log(`Account save Error: ${error}: ${JSON.stringify(error)}`);
-            // throw new HttpException(error.message);
+            throw { status: error.response!.status, message: error.message } as HttpException;
         }
     }
 
@@ -54,6 +56,7 @@ class HttpClient {
             return (response.data as UploadFile);
         } catch (error) {
             console.log(`Upload Error: ${error}: ${JSON.stringify(error)}`);
+            throw { status: error.response!.status, message: error.message } as HttpException;
         }
     }
 
@@ -66,6 +69,7 @@ class HttpClient {
             return response.data;
         } catch (error) {
             console.log(`Download Error: ${error}: ${JSON.stringify(error)}`);
+            throw { status: error.response!.status, message: error.message } as HttpException;
         }
     }
 
