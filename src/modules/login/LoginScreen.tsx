@@ -1,16 +1,15 @@
-import { ProgressBar } from '@react-native-community/progress-bar-android';
+import { ActivityIndicator } from '@react-native-material/core';
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
 import Snackbar from 'react-native-snackbar';
+import { sleep } from '../../commons/Constants';
 import { saveToken } from '../../commons/CredentialStorage';
 import FormButton from '../../components/FormButton';
 import FormInput from '../../components/FormInput';
 import HttpClient from '../../http/services/HttpClient';
 import styles from '../../styles';
 import { ExecutionParam } from '../execution/ExecutionScreen';
-import { ActivityIndicator } from '@react-native-material/core';
-import { LENGTH_MEDIUM } from '../../commons/Constants';
 
 
 const LoginScreen = () => {
@@ -27,23 +26,23 @@ const LoginScreen = () => {
     try {
       const client = new HttpClient(baseUrl);
       const token = await client.login({ username, password });
-        if (token) {
-          saveToken(token);
-          Snackbar.show({
-            text: `Login Success: ${JSON.stringify(token)}`,
-            duration: Snackbar.LENGTH_LONG,
-          });
-        }
-    } catch (error) {
+
+      if (token) {
+        saveToken(token);
         Snackbar.show({
-          text: `Login Error: ${JSON.stringify(error)}`,
+          text: `Login Success: ${JSON.stringify(token)}`,
           duration: Snackbar.LENGTH_LONG,
         });
+      }
+    } catch (error) {
+      Snackbar.show({
+        text: `Login Error: ${JSON.stringify(error)}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
     }
+    await sleep();
 
-    setTimeout(() => {
-        setLoading(false);
-    }, LENGTH_MEDIUM)
+    setLoading(false);
   }
 
   return (

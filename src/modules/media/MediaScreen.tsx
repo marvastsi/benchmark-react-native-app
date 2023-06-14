@@ -1,5 +1,5 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { ProgressBar } from '@react-native-community/progress-bar-android';
+import { ActivityIndicator } from '@react-native-material/core';
 import React from 'react';
 import { Text, View } from 'react-native';
 import styles from '../../styles';
@@ -12,16 +12,12 @@ const MediaScreen = () => {
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
 
-  const [inProgress, setInProgress] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   return (
     <View style={styles.container}>
       <Text style={styles.field}>Base Url: {baseUrl}</Text>
-      <ProgressBar
-          indeterminate={true}
-          styleAttr='Large'
-          animating={inProgress}
-        />
+      <ActivityIndicator color='teal' size='large' animating={loading} />
     </View>
     
   );

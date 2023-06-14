@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 
 const HEADERS = {
     Accept: 'application/json',
@@ -22,8 +22,6 @@ class HttpClient {
                 credentials,
                 { headers: HEADERS }
             );
-
-            console.log(`Login END`);
             return (response.data as Token);
         } catch (error) {
             console.log(`Login Error: ${error}`);

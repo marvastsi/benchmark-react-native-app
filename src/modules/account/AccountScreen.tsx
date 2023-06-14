@@ -1,4 +1,4 @@
-import { ProgressBar } from '@react-native-community/progress-bar-android';
+import { ActivityIndicator } from '@react-native-material/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -11,6 +11,7 @@ import LabeledSwitch from '../../components/LabeledSwitch';
 import HttpClient from '../../http/services/HttpClient';
 import styles from '../../styles';
 import { ExecutionParam } from '../execution/ExecutionScreen';
+import { sleep } from '../../commons/Constants';
 
 type Person = { name: string, baseUrl: string };
 
@@ -19,7 +20,7 @@ const AccountScreen = () => {
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
 
-  const [inProgress, setInProgress] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -37,28 +38,33 @@ const AccountScreen = () => {
     { label: '+1 USA', value: '+1' }
   ]);
 
-  const handleSaveAccount = async () => {
-    setInProgress(true);
+  const saveAccount = async () => {
+    try {
+      const client = new HttpClient(baseUrl);
+      const accountCreated = await client.saveAccount({
+        firstName,
+        lastName,
+        email,
+        phoneCountryCode,
+        phoneNumber,
+        active,
+        notification,
+        username,
+        password,
+      })
 
-    const client = new HttpClient(baseUrl);
-    const accountCreated = await client.saveAccount({
-      firstName,
-      lastName,
-      email,
-      phoneCountryCode,
-      phoneNumber,
-      active,
-      notification,
-      username,
-      password,
-    })
+      Snackbar.show({
+        text: `Account Saved: ${accountCreated.accountId}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    } catch (error) {
 
-    Snackbar.show({
-      text: `Account Saved: ${accountCreated.accountId}`,
-      duration: Snackbar.LENGTH_LONG,
-    });
-
-    setInProgress(false);
+      Snackbar.show({
+        text: `Account Create Error: ${JSON.stringify(error)}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    }
+    await sleep();
   }
 
   return (
@@ -129,20 +135,13 @@ const AccountScreen = () => {
           placeholder='password'
           secureTextEntry={true}
         />
-        <ProgressBar
-          indeterminate={true}
-          styleAttr='Large'
-          animating={inProgress}
-        />
+        <ActivityIndicator color='teal' size='large' animating={loading} />
         <FormButton
           title='Save'
-          onPress={() => {
-            setInProgress(true);
-            setTimeout(() => {
-              handleSaveAccount();
-            }, 5000);
-
-            setInProgress(false);
+          onPress={async () => {
+            setLoading(true);
+            await saveAccount();
+            setLoading(false);
           }}
         />
       </ScrollView>

@@ -1,27 +1,39 @@
+import { ActivityIndicator } from '@react-native-material/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
-import styles from '../../styles';
 import Snackbar from 'react-native-snackbar';
 import FormButton from '../../components/FormButton';
 import FormInput from '../../components/FormInput';
-import { ProgressBar } from '@react-native-community/progress-bar-android';
+import styles from '../../styles';
 import { ExecutionParam } from '../execution/ExecutionScreen';
+import { sleep } from '../../commons/Constants';
 
 const UploadScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
 
-  const [inProgress, setInProgress] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const [file, setFile] = React.useState('');
 
-  const handleUpload = () => {
-    Snackbar.show({
-      text: `Implement this: Upload ${file || 'fileXXX'}`,
-      duration: Snackbar.LENGTH_LONG,
-    });
+  const handleUpload = async () => {
+    setLoading(true);
+    try {
+      Snackbar.show({
+        text: `Implement this: Upload ${file || 'fileXXX'}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    } catch (error) {
+      Snackbar.show({
+        text: `Upload Error: ${JSON.stringify(error)}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    }
+
+    await sleep();
+    setLoading(false);
   }
 
   return (
@@ -32,11 +44,7 @@ const UploadScreen = () => {
         placeholder='upload file'
         secureTextEntry={true}
       />
-      <ProgressBar
-          indeterminate={true}
-          styleAttr='Large'
-          animating={inProgress}
-        />
+      <ActivityIndicator color='teal' size='large' animating={loading} />
       <FormButton
         title='Upload'
         onPress={handleUpload}
