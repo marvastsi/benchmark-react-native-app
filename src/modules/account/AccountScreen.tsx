@@ -34,6 +34,7 @@ const AccountScreen = () => {
 
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = React.useState([
+    { label: 'Select country-code', value: '' },
     { label: '+55 BRA', value: '+55' },
     { label: '+1 USA', value: '+1' }
   ]);
@@ -148,8 +149,6 @@ const AccountScreen = () => {
     </View>
   );
 };
-
-
 
 const accountStyles = StyleSheet.create({
   checksContainer: {
