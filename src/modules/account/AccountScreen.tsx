@@ -1,9 +1,9 @@
-import { ActivityIndicator } from '@react-native-material/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Snackbar from 'react-native-snackbar';
+import { sleep } from '../../commons/Constants';
 import FormButton from '../../components/FormButton';
 import FormInput from '../../components/FormInput';
 import LabeledCheckbox from '../../components/LabeledCheckbox';
@@ -11,7 +11,6 @@ import LabeledSwitch from '../../components/LabeledSwitch';
 import HttpClient from '../../http/services/HttpClient';
 import styles from '../../styles';
 import { ExecutionParam } from '../execution/ExecutionScreen';
-import { sleep } from '../../commons/Constants';
 
 type Person = { name: string, baseUrl: string };
 
@@ -19,8 +18,6 @@ const AccountScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
-
-  const [loading, setLoading] = React.useState(false);
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -65,6 +62,7 @@ const AccountScreen = () => {
         duration: Snackbar.LENGTH_LONG,
       });
     }
+
     await sleep();
   }
 
@@ -136,14 +134,10 @@ const AccountScreen = () => {
           placeholder='password'
           secureTextEntry={true}
         />
-        <ActivityIndicator color='teal' size='large' animating={loading} />
+
         <FormButton
           title='Save'
-          onPress={async () => {
-            setLoading(true);
-            await saveAccount();
-            setLoading(false);
-          }}
+          onPress={saveAccount}
         />
       </ScrollView>
     </View>

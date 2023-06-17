@@ -1,9 +1,11 @@
-import { ActivityIndicator, Text } from '@react-native-material/core';
+import { Text } from '@react-native-material/core';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { types } from 'react-native-document-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Snackbar from 'react-native-snackbar';
+import { sleep } from '../../commons/Constants';
 import FormButton from '../../components/FormButton';
 import FormInput from '../../components/FormInput';
 import InputFile from '../../components/ImputFile';
@@ -12,17 +14,15 @@ import styles from '../../styles';
 const ConfigScreen = () => {
   const navigation = useNavigation();
 
-  const [loading, setLoading] = React.useState(false);
+  const [testLoad, setTextLoad] = useState('');
+  const [mediaFile, setMediaFile] = useState({ name: '' });
+  const [uploadFile, setUploadFile] = useState({ name: '' });
+  const [downloadFile, setDownloadFile] = useState('');
+  const [serverUrl, setServerUrl] = useState('');
+  const [scenario, setScenario] = useState(0);
 
-  const [testLoad, setTextLoad] = React.useState('');
-  const [mediaFile, setMediaFile] = React.useState('');
-  const [uploadFile, setUploadFile] = React.useState('');
-  const [downloadFile, setDownloadFile] = React.useState('');
-  const [serverUrl, setServerUrl] = React.useState('');
-  const [scenario, setScenario] = React.useState(0);
-
-  const [open, setOpen] = React.useState(false);
-  const [items, setItems] = React.useState([
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
     { label: 'Select scenario', value: 0 },
     { label: '1 - Login API', value: 1 },
     { label: '2 - Account Form', value: 2 },
@@ -32,13 +32,12 @@ const ConfigScreen = () => {
   ]);
 
   const saveConfig = async () => {
-    setLoading(true);
     Snackbar.show({
       text: `Implement this: Save Config`,
       duration: Snackbar.LENGTH_LONG,
     });
 
-    setLoading(false);
+    await sleep();
   }
 
   return (
@@ -51,14 +50,19 @@ const ConfigScreen = () => {
       />
       <InputFile
         keyboardType='url'
-        value={mediaFile}
-        onChangeText={setMediaFile}
-        placeholder='Media file' />
+        value={mediaFile.name}
+        placeholder='Media file'
+        setFile={setMediaFile}
+        fileType={types.video}
+      />
       <InputFile
         keyboardType='url'
-        value={uploadFile}
-        onChangeText={setUploadFile}
-        placeholder='Upload file' />
+        value={uploadFile.name}
+        placeholder='Upload file'
+        setFile={setUploadFile}
+        fileType={types.allFiles}
+      />
+
       <FormInput
         onChangeText={setDownloadFile}
         value={downloadFile}
@@ -91,7 +95,7 @@ const ConfigScreen = () => {
         If a specific scenario was selected, then only this
         scenario will be executed N times, where N = numberOfExecutions
       </Text>
-      <ActivityIndicator color='teal' size='large' animating={loading} />
+
       <FormButton
         title='Save Config'
         onPress={saveConfig}

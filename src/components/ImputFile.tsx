@@ -1,15 +1,59 @@
 import { IconButton } from '@react-native-material/core';
-import React from 'react';
+import React, { Dispatch, useCallback } from 'react';
 import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
+import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
 import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const InputFile = (props: TextInputProps) => {
+export interface InputFileProps extends TextInputProps {
+    fileType?: string | string[]
+    setFile: Dispatch<DocumentPickerResponse | null | any>;
+}
+
+const InputFile = (props: InputFileProps) => {
+    const { fileType, setFile } = props;
+
+    const logFilePicked = (res: DocumentPickerResponse) => {
+        console.log('res : ' + JSON.stringify(res));
+        console.log('URI : ' + res.uri);
+        console.log('Encoded URI : ' + encodeURI(res.uri));
+        console.log('Type : ' + res.type);
+        console.log('File Name : ' + res.name);
+        console.log('File Size : ' + res.size);
+    };
+
+    const handleFileError = (err: any) => {
+        if (DocumentPicker.isCancel(err)) {
+            Snackbar.show({
+                text: 'Canceled',
+                duration: Snackbar.LENGTH_LONG,
+            });
+        } else {
+            Snackbar.show({
+                text: 'Unknown Error: ' + JSON.stringify(err),
+                duration: Snackbar.LENGTH_LONG,
+            });
+            throw err;
+        }
+    };
+
+    const onSelectFile = useCallback(async () => {
+        try {
+            const res = await DocumentPicker.pickSingle({
+                type: fileType,
+                copyTo: 'cachesDirectory'
+            });
+            logFilePicked(res);
+            setFile(res);
+        } catch (err) {
+            handleFileError(err);
+        }
+    }, [setFile]);
 
     return (
         <View style={styles.fileInputView}>
             <TextInput
-                {...props}
+                {...props as TextInputProps}
                 style={styles.textInput}
                 placeholderTextColor='#9e9e9e'
                 autoComplete='off'
@@ -18,12 +62,7 @@ const InputFile = (props: TextInputProps) => {
             <IconButton
                 style={styles.iconButton}
                 icon={props => <Icon style={{ color: 'white' }} name="folder" {...props} />}
-                onPress={() => {
-                    Snackbar.show({
-                        text: 'Implement this to open files',
-                        duration: Snackbar.LENGTH_LONG,
-                    });
-                }}
+                onPress={onSelectFile}
             />
         </View>
     );

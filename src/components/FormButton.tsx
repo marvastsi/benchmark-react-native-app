@@ -1,3 +1,4 @@
+import { ActivityIndicator } from '@react-native-material/core';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -8,11 +9,25 @@ type ButtonProps = {
 
 const FormButton = (props: ButtonProps) => {
     const { onPress, title } = props;
+    const [loading, setLoading] = React.useState(false);
+
     return (
         <View style={styles.buttonView}>
+            <ActivityIndicator
+                color='teal'
+                size='large'
+                animating={loading}
+                style={[loading ? { zIndex: 1, marginBottom: -40 } : { zIndex: -1, marginBottom: -40 }]}
+            />
             <TouchableOpacity
-                style={styles.formButton}
-                onPress={onPress}
+                style={[styles.formButton,
+                loading ? { backgroundColor: '#0AC3B2', }
+                    : { backgroundColor: 'teal', }]}
+                onPress={async (event) => {
+                    setLoading(true);
+                    await onPress(event);
+                    setLoading(false);
+                }}
             >
                 <Text style={styles.buttonText}>{title}</Text>
             </TouchableOpacity>
@@ -22,6 +37,7 @@ const FormButton = (props: ButtonProps) => {
 
 const styles = StyleSheet.create({
     buttonView: {
+        marginTop: 50,
         marginHorizontal: 48,
         alignSelf: 'stretch',
     },
@@ -32,8 +48,8 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         elevation: 6,
         height: 40,
-        marginTop: 50,
         backgroundColor: 'teal',
+        zIndex: 0,
     },
     buttonText: {
         fontSize: 16,

@@ -1,4 +1,3 @@
-import { ActivityIndicator } from '@react-native-material/core';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
@@ -16,12 +15,9 @@ const DownloadScreen = () => {
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
 
-  const [loading, setLoading] = React.useState(false);
-
   const [filename, setFilename] = React.useState('');
 
   const handlDownload = async () => {
-    setLoading(true);
     try {
       Snackbar.show({
         text: `Implement this: Download ${filename || 'fileXXX'}`,
@@ -35,7 +31,6 @@ const DownloadScreen = () => {
     }
 
     await sleep();
-    setLoading(false);
   }
 
   return (
@@ -46,7 +41,7 @@ const DownloadScreen = () => {
         placeholder='download file'
         secureTextEntry={true}
       />
-      <ActivityIndicator color='teal' size='large' animating={loading} />
+
       <FormButton
         title='Download'
         onPress={handlDownload}

@@ -9,8 +9,8 @@ const LabeledSwitch = (props: SwitchProps) => {
             <Switch
                 {...props}
                 style={styles.switch}
-                trackColor={{ false: '#bdbdbd', true: '#81b0ff' }}//767577
-                thumbColor={props.value ? 'teal' : '#ededed'}//f4f3f4
+                trackColor={{ false: '#bdbdbd', true: '#b0f0ea' }}
+                thumbColor={props.value ? 'teal' : '#ededed'}
             />
         </View>
     );

@@ -1,4 +1,3 @@
-import { ActivityIndicator } from '@react-native-material/core';
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
 import { View } from 'react-native';
@@ -14,7 +13,6 @@ import { ExecutionParam } from '../execution/ExecutionScreen';
 
 const LoginScreen = () => {
   const route = useRoute();
-  const [loading, setLoading] = React.useState(false);
 
   // const { serverUrl } = route.params as Config;
   const { baseUrl } = route.params as ExecutionParam;
@@ -22,7 +20,6 @@ const LoginScreen = () => {
   const [password, setPassword] = React.useState('');
 
   const handleLogin = async () => {
-    setLoading(true);
     try {
       const client = new HttpClient(baseUrl);
       const token = await client.login({ username, password });
@@ -40,9 +37,8 @@ const LoginScreen = () => {
         duration: Snackbar.LENGTH_LONG,
       });
     }
-    await sleep();
 
-    setLoading(false);
+    await sleep();
   }
 
   return (
@@ -58,7 +54,6 @@ const LoginScreen = () => {
         placeholder='password'
         secureTextEntry={true}
       />
-      <ActivityIndicator color='teal' size='large' animating={loading} />
       <FormButton
         title='Login'
         onPress={handleLogin}
