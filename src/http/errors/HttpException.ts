@@ -1,4 +1,5 @@
 interface HttpException {
-    status: number;
-    message: string;
+    status?: number | undefined;
+    message?: string | undefined;
 }
+

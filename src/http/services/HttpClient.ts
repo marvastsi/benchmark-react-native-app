@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
-import { Credentials, Token } from "../../models/Credentials";
 import { Account, AccountCreated } from "../../models/Account";
+import { Credentials, Token } from "../../models/Credentials";
 import { FileUpload, FileUploadResponse } from "../../models/FileUpload";
 
 const HEADERS = {
@@ -27,8 +27,7 @@ class HttpClient {
             );
             return (response.data as Token);
         } catch (error) {
-            console.log(`Login Error: ${error}`);
-            throw { status: error.response!.status, message: error.message } as HttpException;
+            this.handleException(error as Error, "Login Error: ${error}");
         }
     }
 
@@ -42,15 +41,13 @@ class HttpClient {
 
             return (response.data as AccountCreated);
         } catch (error) {
-            console.log(`Account save Error: ${error}: ${JSON.stringify(error)}`);
-            throw { status: error.response!.status, message: error.message } as HttpException;
+            this.handleException(error as Error, "Account save Error");
         }
     }
 
     async upload(inputFile: FileUpload): Promise<FileUploadResponse> {
         try {
             var formData = new FormData();
-
             formData.append('file', inputFile);
 
             const response = await this.api.post('/files/upload', formData,
@@ -62,16 +59,10 @@ class HttpClient {
                 },
             );
 
-            console.log('*****handle success******');
             console.log(response.data);
             return (response.data as FileUploadResponse);
         } catch (error) {
-            if (error instanceof AxiosError) {
-                const responseErr = error as AxiosError;
-                console.log('*****handle failure******' + responseErr);
-            }
-            console.log(`Upload Error: ${error}: ${JSON.stringify(error)}`);
-            throw { status: error.response!.status, message: error.message } as HttpException;
+            this.handleException(error as Error, "Upload Error");
         }
     }
 
@@ -81,13 +72,23 @@ class HttpClient {
                 `/files/download/:${fileName}`,
                 { headers: HEADERS },
             );
+            console.log(response.data);
             return response.data;
         } catch (error) {
-            console.log(`Download Error: ${error}: ${JSON.stringify(error)}`);
-            throw { status: error.response!.status, message: error.message } as HttpException;
+            this.handleException(error as Error, "Download Error");
         }
     }
 
+    handleException(error: Error, message: string) {
+        let exeption;
+        if (error instanceof AxiosError) {
+            exeption = { status: error.response!.status, message: error.message } as HttpException;
+        } else {
+            exeption = { ...error } as HttpException;
+        }
+        console.log(`${message}: ${JSON.stringify(exeption)}`);
+        throw exeption;
+    }
 }
 
 export default HttpClient;
