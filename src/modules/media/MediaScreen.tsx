@@ -1,18 +1,26 @@
-import { useRoute } from '@react-navigation/native';
-import React from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { ActivityIndicator } from '@react-native-material/core';
+import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
+import styles from '../../styles';
+import { ExecutionParam } from '../execution/ExecutionScreen';
+import { sleep } from '../../commons/Constants';
 
 type Person = {name: string, baseUrl: string};
 
 const MediaScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const { baseUrl } = route.params as ExecutionParam;
+
+  const [loading, setLoading] = React.useState(false);
 
   return (
-    <View style={{ flex: 1, paddingTop: 12, paddingHorizontal: 10 }}>
-      <Text style={{ fontSize: 18, paddingBottom: 12 }}>Name: {name}</Text>
-      <Text style={{ fontSize: 18 }}>Base Url: {baseUrl}</Text>
+    <View style={styles.container}>
+      <Text style={styles.field}>Base Url: {baseUrl}</Text>
+      <ActivityIndicator color='teal' size='large' animating={loading} />
     </View>
+    
   );
 };
 

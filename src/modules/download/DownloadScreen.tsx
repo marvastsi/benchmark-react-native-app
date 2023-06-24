@@ -1,17 +1,50 @@
-import { useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import Snackbar from 'react-native-snackbar';
+import { sleep } from '../../commons/Constants';
+import FormButton from '../../components/FormButton';
+import FormInput from '../../components/FormInput';
+import styles from '../../styles';
+import { ExecutionParam } from '../execution/ExecutionScreen';
 
-type Person = {name: string, baseUrl: string};
+type Person = { name: string, baseUrl: string };
 
 const DownloadScreen = () => {
+  const navigation = useNavigation();
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+  const { baseUrl } = route.params as ExecutionParam;
+
+  const [filename, setFilename] = React.useState('');
+
+  const handlDownload = async () => {
+    try {
+      Snackbar.show({
+        text: `Implement this: Download ${filename || 'fileXXX'}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    } catch (error) {
+      Snackbar.show({
+        text: `Download Error: ${JSON.stringify(error)}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    }
+
+    await sleep();
+  }
 
   return (
-    <View style={{ flex: 1, paddingTop: 12, paddingHorizontal: 10 }}>
-      <Text style={{ fontSize: 18, paddingBottom: 12 }}>Name: {name}</Text>
-      <Text style={{ fontSize: 18 }}>Base Url: {baseUrl}</Text>
+    <View style={styles.container}>
+      <FormInput
+        onChangeText={setFilename}
+        value={filename}
+        placeholder='download file'
+      />
+
+      <FormButton
+        title='Download'
+        onPress={handlDownload}
+      />
     </View>
   );
 };

@@ -1,19 +1,66 @@
 import { useRoute } from '@react-navigation/native';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import Snackbar from 'react-native-snackbar';
+import { sleep } from '../../commons/Constants';
+import { saveToken } from '../../commons/CredentialStorage';
+import FormButton from '../../components/FormButton';
+import FormInput from '../../components/FormInput';
+import HttpClient from '../../http/services/HttpClient';
+import styles from '../../styles';
+import { ExecutionParam } from '../execution/ExecutionScreen';
 
-type Person = {name: string, baseUrl: string};
 
 const LoginScreen = () => {
   const route = useRoute();
-  const { name, baseUrl: baseUrl } = route.params as Person;
+
+  // const { serverUrl } = route.params as Config;
+  const { baseUrl } = route.params as ExecutionParam;
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleLogin = async () => {
+    try {
+      const client = new HttpClient(baseUrl);
+      const token = await client.login({ username, password });
+
+      if (token) {
+        saveToken(token);
+        Snackbar.show({
+          text: `Login Success: ${JSON.stringify(token)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      }
+    } catch (error) {
+      Snackbar.show({
+        text: `Login Error: ${JSON.stringify(error)}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    }
+
+    await sleep();
+  }
 
   return (
-    <View style={{ flex: 1, paddingTop: 12, paddingHorizontal: 10 }}>
-      <Text style={{ fontSize: 18, paddingBottom: 12 }}>Name: {name}</Text>
-      <Text style={{ fontSize: 18 }}>Base Url: {baseUrl}</Text>
+    <View style={styles.container}>
+      <FormInput
+        onChangeText={setUsername}
+        value={username}
+        placeholder='username'
+      />
+      <FormInput
+        onChangeText={setPassword}
+        value={password}
+        placeholder='password'
+        secureTextEntry={true}
+      />
+      <FormButton
+        title='Login'
+        onPress={handleLogin}
+      />
     </View>
   );
 };
+
 
 export default LoginScreen;
