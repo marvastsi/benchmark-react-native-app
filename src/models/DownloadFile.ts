@@ -1,3 +1,0 @@
-interface DownloadFile {
-    file: string;
-}

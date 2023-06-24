@@ -1,4 +1,4 @@
-interface Account {
+export type Account = {
     firstName: string;
     lastName?: string;
     email: string;
@@ -10,6 +10,6 @@ interface Account {
     password: string;
 }
 
-interface AccountCreated {
+export type AccountCreated = {
     accountId: string;
 }

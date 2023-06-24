@@ -1,4 +1,4 @@
-interface Config {
+export type Config = {
     testLoad: number;
     mediaFile: string;
     uploadFile: string;

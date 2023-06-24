@@ -1,7 +1,7 @@
 import { IconButton } from '@react-native-material/core';
 import React, { Dispatch, useCallback } from 'react';
 import { StyleSheet, TextInput, TextInputProps, View } from 'react-native';
-import DocumentPicker, { DocumentPickerResponse } from 'react-native-document-picker';
+import DocumentPicker, { DocumentPickerResponse, types } from 'react-native-document-picker';
 import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -20,6 +20,7 @@ const InputFile = (props: InputFileProps) => {
         console.log('Type : ' + res.type);
         console.log('File Name : ' + res.name);
         console.log('File Size : ' + res.size);
+        console.log('=========== : ');
     };
 
     const handleFileError = (err: any) => {

@@ -1,9 +1,9 @@
-interface Credentials {
+export type  Credentials = {
     username: string;
     password: string;
 }
 
-interface Token  {
+export type Token  = {
     type: string;
     value: string;
 }

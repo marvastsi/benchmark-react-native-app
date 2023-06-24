@@ -39,7 +39,6 @@ const DownloadScreen = () => {
         onChangeText={setFilename}
         value={filename}
         placeholder='download file'
-        secureTextEntry={true}
       />
 
       <FormButton

@@ -1,17 +1,20 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
+import { Credentials, Token } from "../../models/Credentials";
+import { Account, AccountCreated } from "../../models/Account";
+import { FileUpload, FileUploadResponse } from "../../models/FileUpload";
 
 const HEADERS = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
+    Accept: "application/json",
+    "Content-Type": "application/json",
 };
 
 class HttpClient {
     private api: AxiosInstance;
 
     constructor(baseUrl: string) {
-        console.log(`baseURL: ${baseUrl}`);
         this.api = axios.create({
-            baseURL: baseUrl
+            baseURL: baseUrl,
+            headers: HEADERS
         });
     }
 
@@ -44,15 +47,29 @@ class HttpClient {
         }
     }
 
-    async upload(file: FileReader): Promise<UploadFile> {
+    async upload(inputFile: FileUpload): Promise<FileUploadResponse> {
         try {
-            const response = await this.api.post(
-                '/files/upload',
-                file,
-                { headers: HEADERS },
+            var formData = new FormData();
+
+            formData.append('file', inputFile);
+
+            const response = await this.api.post('/files/upload', formData,
+                {
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'multipart/form-data',
+                    },
+                },
             );
-            return (response.data as UploadFile);
+
+            console.log('*****handle success******');
+            console.log(response.data);
+            return (response.data as FileUploadResponse);
         } catch (error) {
+            if (error instanceof AxiosError) {
+                const responseErr = error as AxiosError;
+                console.log('*****handle failure******' + responseErr);
+            }
             console.log(`Upload Error: ${error}: ${JSON.stringify(error)}`);
             throw { status: error.response!.status, message: error.message } as HttpException;
         }
