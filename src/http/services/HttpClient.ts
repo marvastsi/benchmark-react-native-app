@@ -1,6 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
+import { Buffer } from "buffer";
+import fs from "react-native-fs";
 import { Account, AccountCreated } from "../../models/Account";
 import { Credentials, Token } from "../../models/Credentials";
+import { DownloadFile } from "../../models/DownloadFile";
 import { FileUpload, FileUploadResponse } from "../../models/FileUpload";
 
 const HEADERS = {
@@ -10,15 +13,17 @@ const HEADERS = {
 
 class HttpClient {
     private api: AxiosInstance;
+    private baseUrl: string;
 
     constructor(baseUrl: string) {
+        this.baseUrl = baseUrl;
         this.api = axios.create({
             baseURL: baseUrl,
             headers: HEADERS
         });
     }
 
-    async login(credentials: Credentials): Promise<Token> {
+    public login = async (credentials: Credentials): Promise<Token> => {
         try {
             const response = await this.api.post(
                 "/login",
@@ -31,7 +36,7 @@ class HttpClient {
         }
     }
 
-    async saveAccount(account: Account): Promise<AccountCreated> {
+    public saveAccount = async (account: Account): Promise<AccountCreated> => {
         try {
             const response = await this.api.post(
                 "/accounts",
@@ -45,7 +50,7 @@ class HttpClient {
         }
     }
 
-    async upload(inputFile: FileUpload): Promise<FileUploadResponse> {
+    public upload = async (inputFile: FileUpload): Promise<FileUploadResponse> => {
         try {
             var formData = new FormData();
             formData.append("file", inputFile);
@@ -59,27 +64,45 @@ class HttpClient {
                 },
             );
 
-            console.log(response.data);
             return (response.data as FileUploadResponse);
         } catch (error) {
             this.handleException(error as Error, "Upload Error");
         }
     }
 
-    async download(fileName: string): Promise<string> {
+    public download = async (fileName: string): Promise<DownloadFile> => {
         try {
-            const response = await this.api.post(
-                `/files/download/:${fileName}`,
-                { headers: HEADERS },
+            const response = await this.api.get(
+                `/files/download/${fileName}`,
+                {
+                    headers: {
+                        Accept: "*/*",
+                    },
+                    responseType: 'arraybuffer',
+                },
             );
-            console.log(response.data);
-            return response.data;
+
+            const path = `${fs.DownloadDirectoryPath}/${fileName}`;
+            const data = Buffer.from(response.data, "binary").toString("base64");
+
+            await this.makeFile(path, data);
+
+            return new DownloadFile(fileName, path);
         } catch (error) {
             this.handleException(error as Error, "Download Error");
         }
     }
 
-    handleException(error: Error, message: string) {
+    private makeFile = async (filePath: string, data: string) => {
+        try {
+            await fs.writeFile(filePath, data, "base64");
+            console.log("written to file");
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    private handleException = (error: Error, message: string): void => {
         let exeption;
         if (error instanceof AxiosError) {
             exeption = { status: error.response!.status, message: error.message } as HttpException;

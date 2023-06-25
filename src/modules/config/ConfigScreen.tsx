@@ -1,6 +1,6 @@
 import { Text } from "@react-native-material/core";
 import { StackActions, useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { types } from "react-native-document-picker";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -13,6 +13,7 @@ import InputFile from "../../components/ImputFile";
 import { Config } from "../../models/Config";
 import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
+import requestPermission from "../download/Permissions";
 
 const ConfigScreen = () => {
   const popAction = StackActions.pop(1);
@@ -34,6 +35,20 @@ const ConfigScreen = () => {
     { label: "4 - Upload File", value: 4 },
     { label: "5 - Media Execution", value: 5 },
   ]);
+
+  useEffect(() => {
+    requestPermission()
+      .then(() => {
+        console.log(`Permissions Granted}`);
+      })
+      .catch((error) => {
+        console.error(`Permissions error: ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `Permissions error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  }, []);
 
   const handleConfigSave = async () => {
     try {

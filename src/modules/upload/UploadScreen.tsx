@@ -1,4 +1,4 @@
-import { useNavigation, useRoute, StackActions } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
@@ -9,13 +9,11 @@ import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
-import { ExecutionParam } from "../execution/ExecutionScreen";
 
 const UploadScreen = () => {
   const popAction = StackActions.pop(1);
   const navigation = useNavigation();
-  const route = useRoute();
-  const { baseUrl } = route.params as ExecutionParam;
+  const [baseUrl, setBaseUrl] = useState("");
   const [uploadFile, setUploadFile] = useState<FileUpload>({
     name: "",
     uri: null,
@@ -25,13 +23,14 @@ const UploadScreen = () => {
   useEffect(() => {
     retrieveConfig()
       .then((config) => {
-        console.log(`Data loaded: ${JSON.stringify(config)}`);
+        console.log(`UploadScreen loaded: ${JSON.stringify(config)}`);
         setUploadFile(config.uploadFile);
+        setBaseUrl(config.serverUrl);
       })
       .catch((error) => {
-        console.error(`Data loading error: ${JSON.stringify(error)}`);
+        console.error(`UploadScreen loading error: ${JSON.stringify(error)}`);
         Snackbar.show({
-          text: `Data loading error: ${JSON.stringify(error)}`,
+          text: `UploadScreen loading error: ${JSON.stringify(error)}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
@@ -49,7 +48,7 @@ const UploadScreen = () => {
         });
       }
     } catch (error) {
-      console.error(`Data loading error: ${JSON.stringify(error)}`);
+      console.error(`Upload error: ${JSON.stringify(error)}`);
       Snackbar.show({
         text: `Upload Error: ${JSON.stringify(error)}`,
         duration: Snackbar.LENGTH_LONG,
