@@ -1,29 +1,51 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
+import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
+import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
-import { ExecutionParam } from "../execution/ExecutionScreen";
 
-type Person = { name: string, baseUrl: string };
 
 const DownloadScreen = () => {
+  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
-  const route = useRoute();
-  const { baseUrl } = route.params as ExecutionParam;
 
-  const [filename, setFilename] = React.useState("");
+  const [baseUrl, setBaseUrl] = useState("");
+  const [filename, setFilename] = useState("");
+
+  useEffect(() => {
+    retrieveConfig()
+      .then((config) => {
+        console.log(`DownloadScreen loaded: ${JSON.stringify(config)}`);
+        setFilename(config.downloadFile);
+        setBaseUrl(config.serverUrl);
+      })
+      .catch((error) => {
+        console.error(`DownloadScreen loading error: ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `DownloadScreen loading error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  }, []);
 
   const handlDownload = async () => {
     try {
-      Snackbar.show({
-        text: `Implement this: Download ${filename || "fileXXX"}`,
-        duration: Snackbar.LENGTH_LONG,
-      });
+      const client = new HttpClient(baseUrl);
+      const result = await client.download(filename);
+
+      if (result) {
+        Snackbar.show({
+          text: `Download Success: ${JSON.stringify(result)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      }
     } catch (error) {
+      console.error(`Download error: ${JSON.stringify(error)}`);
       Snackbar.show({
         text: `Download Error: ${JSON.stringify(error)}`,
         duration: Snackbar.LENGTH_LONG,
@@ -31,6 +53,10 @@ const DownloadScreen = () => {
     }
 
     await sleep();
+    if (navigation.canGoBack()) {
+      // navigation.goBack();
+      navigation.dispatch(popAction);
+    }
   }
 
   return (

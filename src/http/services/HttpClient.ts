@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosInstance } from "axios";
 import { Account, AccountCreated } from "../../models/Account";
 import { Credentials, Token } from "../../models/Credentials";
 import { FileUpload, FileUploadResponse } from "../../models/FileUpload";
+import fs from "react-native-fs";
 
 const HEADERS = {
     Accept: "application/json",
@@ -59,7 +60,6 @@ class HttpClient {
                 },
             );
 
-            console.log(response.data);
             return (response.data as FileUploadResponse);
         } catch (error) {
             this.handleException(error as Error, "Upload Error");
@@ -68,14 +68,31 @@ class HttpClient {
 
     async download(fileName: string): Promise<string> {
         try {
-            const response = await this.api.post(
-                `/files/download/:${fileName}`,
-                { headers: HEADERS },
+            const response = await this.api.get(
+                `/files/download/${fileName}`,
+                {
+                    headers: {
+                        Accept: "stream",
+                    },
+                },
             );
-            console.log(response.data);
-            return response.data;
+            const path = `${fs.DownloadDirectoryPath}/${fileName}`;
+            if (response) {
+                console.log(response.data);
+                this.makeFile(path, response.data);
+            }
+            return fileName;
         } catch (error) {
             this.handleException(error as Error, "Download Error");
+        }
+    }
+
+    async makeFile(filePath: string, content: string) {
+        try {
+            await fs.writeFile(filePath, content, "utf8");
+            console.log("written to file");
+        } catch (error) {
+            console.log(error);
         }
     }
 
