@@ -1,6 +1,6 @@
-import { SwitchProps } from '@react-native-material/core';
-import React from 'react';
-import { StyleSheet, Switch, Text, View } from 'react-native';
+import { SwitchProps } from "@react-native-material/core";
+import React from "react";
+import { StyleSheet, Switch, Text, View } from "react-native";
 
 const LabeledSwitch = (props: SwitchProps) => {
     return (
@@ -9,8 +9,8 @@ const LabeledSwitch = (props: SwitchProps) => {
             <Switch
                 {...props}
                 style={styles.switch}
-                trackColor={{ false: '#bdbdbd', true: '#b0f0ea' }}
-                thumbColor={props.value ? 'teal' : '#ededed'}
+                trackColor={{ false: "#bdbdbd", true: "#b0f0ea" }}
+                thumbColor={props.value ? "teal" : "#ededed"}
             />
         </View>
     );
@@ -18,20 +18,20 @@ const LabeledSwitch = (props: SwitchProps) => {
 
 const styles = StyleSheet.create({
     switchContainer: {
-        alignSelf: 'stretch',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
+        alignSelf: "stretch",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "row",
         marginVertical: 10,
     },
     switch: {
-        alignItems: 'flex-end',
+        alignItems: "flex-end",
     },
     label: {
-        alignItems: 'flex-start',
+        alignItems: "flex-start",
         marginRight: 4,
         marginStart: 4,
-        color: '#232123',
+        color: "#232123",
     },
 });
 

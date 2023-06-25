@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: "white",
     paddingTop: 12,
     paddingHorizontal: 24,
@@ -16,10 +16,10 @@ export default StyleSheet.create({
     paddingHorizontal: 24,
   },
   scroolContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
-  appBar: { backgroundColor: 'teal' },
+  appBar: { backgroundColor: "teal" },
   //others
   label: { fontSize: 18, paddingBottom: 12 },
   field: { fontSize: 18 },

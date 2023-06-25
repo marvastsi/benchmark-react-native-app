@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Token } from "../models/Credentials";
 
 const saveToken = async (token: Token) => {
     try {
@@ -18,7 +19,7 @@ const retrieveToken = async (): Promise<Token> => {
         if (value !== null) {
             console.log(`API_TOKEN: ${value}`);
         }
-        return { type: 'Bearer', value } as Token;
+        return { type: "Bearer", value } as Token;
     } catch (error) {
         console.log(`Error: Retrieving API_TOKEN`);
     }

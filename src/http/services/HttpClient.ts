@@ -21,7 +21,7 @@ class HttpClient {
     async login(credentials: Credentials): Promise<Token> {
         try {
             const response = await this.api.post(
-                '/login',
+                "/login",
                 credentials,
                 { headers: HEADERS }
             );
@@ -34,7 +34,7 @@ class HttpClient {
     async saveAccount(account: Account): Promise<AccountCreated> {
         try {
             const response = await this.api.post(
-                '/accounts',
+                "/accounts",
                 account,
                 { headers: HEADERS },
             );
@@ -48,13 +48,13 @@ class HttpClient {
     async upload(inputFile: FileUpload): Promise<FileUploadResponse> {
         try {
             var formData = new FormData();
-            formData.append('file', inputFile);
+            formData.append("file", inputFile);
 
-            const response = await this.api.post('/files/upload', formData,
+            const response = await this.api.post("/files/upload", formData,
                 {
                     headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'multipart/form-data',
+                        Accept: "application/json",
+                        "Content-Type": "multipart/form-data",
                     },
                 },
             );

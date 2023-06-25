@@ -1,9 +1,6 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React from 'react';
+import React from "react";
 
-import Routes from './src/routes';
-
-const Stack = createNativeStackNavigator();
+import Routes from "./src/routes";
 
 const App = () => {
 

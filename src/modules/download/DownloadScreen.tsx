@@ -1,12 +1,12 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React from 'react';
-import { View } from 'react-native';
-import Snackbar from 'react-native-snackbar';
-import { sleep } from '../../commons/Constants';
-import FormButton from '../../components/FormButton';
-import FormInput from '../../components/FormInput';
-import styles from '../../styles';
-import { ExecutionParam } from '../execution/ExecutionScreen';
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React from "react";
+import { View } from "react-native";
+import Snackbar from "react-native-snackbar";
+import { sleep } from "../../commons/Constants";
+import FormButton from "../../components/FormButton";
+import FormInput from "../../components/FormInput";
+import styles from "../../styles";
+import { ExecutionParam } from "../execution/ExecutionScreen";
 
 type Person = { name: string, baseUrl: string };
 
@@ -15,12 +15,12 @@ const DownloadScreen = () => {
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
 
-  const [filename, setFilename] = React.useState('');
+  const [filename, setFilename] = React.useState("");
 
   const handlDownload = async () => {
     try {
       Snackbar.show({
-        text: `Implement this: Download ${filename || 'fileXXX'}`,
+        text: `Implement this: Download ${filename || "fileXXX"}`,
         duration: Snackbar.LENGTH_LONG,
       });
     } catch (error) {
@@ -38,11 +38,11 @@ const DownloadScreen = () => {
       <FormInput
         onChangeText={setFilename}
         value={filename}
-        placeholder='download file'
+        placeholder="download file"
       />
 
       <FormButton
-        title='Download'
+        title="Download"
         onPress={handlDownload}
       />
     </View>

@@ -1,14 +1,14 @@
-import { useRoute } from '@react-navigation/native';
-import React from 'react';
-import { View } from 'react-native';
-import Snackbar from 'react-native-snackbar';
-import { sleep } from '../../commons/Constants';
-import { saveToken } from '../../commons/CredentialStorage';
-import FormButton from '../../components/FormButton';
-import FormInput from '../../components/FormInput';
-import HttpClient from '../../http/services/HttpClient';
-import styles from '../../styles';
-import { ExecutionParam } from '../execution/ExecutionScreen';
+import { useRoute } from "@react-navigation/native";
+import React from "react";
+import { View } from "react-native";
+import Snackbar from "react-native-snackbar";
+import { sleep } from "../../commons/Constants";
+import { saveToken } from "../../commons/CredentialStorage";
+import FormButton from "../../components/FormButton";
+import FormInput from "../../components/FormInput";
+import HttpClient from "../../http/services/HttpClient";
+import styles from "../../styles";
+import { ExecutionParam } from "../execution/ExecutionScreen";
 
 
 const LoginScreen = () => {
@@ -16,8 +16,8 @@ const LoginScreen = () => {
 
   // const { serverUrl } = route.params as Config;
   const { baseUrl } = route.params as ExecutionParam;
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const handleLogin = async () => {
     try {
@@ -46,16 +46,16 @@ const LoginScreen = () => {
       <FormInput
         onChangeText={setUsername}
         value={username}
-        placeholder='username'
+        placeholder="username"
       />
       <FormInput
         onChangeText={setPassword}
         value={password}
-        placeholder='password'
+        placeholder="password"
         secureTextEntry={true}
       />
       <FormButton
-        title='Login'
+        title="Login"
         onPress={handleLogin}
       />
     </View>
