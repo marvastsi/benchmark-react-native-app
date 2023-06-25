@@ -13,7 +13,7 @@ import InputFile from "../../components/ImputFile";
 import { Config } from "../../models/Config";
 import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
-import requestPermission from "../download/Permissions";
+import requestPermission from "../../commons/Permissions";
 
 const ConfigScreen = () => {
   const popAction = StackActions.pop(1);
