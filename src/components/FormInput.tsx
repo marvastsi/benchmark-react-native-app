@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, TextInput, TextInputProps } from 'react-native';
+import React from "react";
+import { StyleSheet, TextInput, TextInputProps } from "react-native";
 
 const FormInput = (props: TextInputProps) => {
     const [isFocused, setIsFocused] = React.useState(false);
@@ -10,10 +10,10 @@ const FormInput = (props: TextInputProps) => {
         <TextInput
             {...props}
             style={[styles.textInput, isFocused ?
-                { borderBottomWidth: 2, borderBottomColor: 'teal' }
-                : { borderBottomWidth: 1, borderBottomColor: 'darkgrey', }]}
-            placeholderTextColor='#9e9e9e'
-            autoComplete='off'
+                { borderBottomWidth: 2, borderBottomColor: "teal" }
+                : { borderBottomWidth: 1, borderBottomColor: "darkgrey", }]}
+            placeholderTextColor="#9e9e9e"
+            autoComplete="off"
             onFocus={handleFocus}
             onBlur={handleBlur}
         />
@@ -23,13 +23,13 @@ const FormInput = (props: TextInputProps) => {
 const styles = StyleSheet.create({
     textInput: {
         height: 46,
-        alignSelf: 'stretch',
-        backgroundColor: 'white',
+        alignSelf: "stretch",
+        backgroundColor: "white",
         borderBottomWidth: 1,
-        borderBottomColor: 'darkgrey',
+        borderBottomColor: "darkgrey",
         marginVertical: 10,
         fontSize: 18,
-        alignItems: 'flex-start',
+        alignItems: "flex-start",
     },
 });
 

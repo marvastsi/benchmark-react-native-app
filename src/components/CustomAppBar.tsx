@@ -1,8 +1,8 @@
 import { AppBar, IconButton } from "@react-native-material/core";
 import { NativeStackHeaderProps } from "@react-navigation/native-stack";
-import React, { useState } from 'react';
-import Snackbar from 'react-native-snackbar';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { useState } from "react";
+import Snackbar from "react-native-snackbar";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "../styles";
 
 const CustomAppBar = ({
@@ -39,7 +39,7 @@ const CustomAppBar = ({
                     {...props}
                     onPress={() => {
                         Snackbar.show({
-                            text: 'Implement this',
+                            text: "Implement this",
                             duration: Snackbar.LENGTH_LONG,
                         });
                     }}

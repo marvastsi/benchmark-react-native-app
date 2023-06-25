@@ -1,64 +1,97 @@
-import { Text } from '@react-native-material/core';
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { types } from 'react-native-document-picker';
-import DropDownPicker from 'react-native-dropdown-picker';
-import Snackbar from 'react-native-snackbar';
-import { sleep } from '../../commons/Constants';
-import FormButton from '../../components/FormButton';
-import FormInput from '../../components/FormInput';
-import InputFile from '../../components/ImputFile';
-import styles from '../../styles';
+import { Text } from "@react-native-material/core";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { types } from "react-native-document-picker";
+import DropDownPicker from "react-native-dropdown-picker";
+import Snackbar from "react-native-snackbar";
+import { saveConfig } from "../../commons/ConfigStorage";
+import { sleep } from "../../commons/Constants";
+import FormButton from "../../components/FormButton";
+import FormInput from "../../components/FormInput";
+import InputFile from "../../components/ImputFile";
+import { Config } from "../../models/Config";
+import { FileUpload } from "../../models/FileUpload";
+import styles from "../../styles";
 
 const ConfigScreen = () => {
+  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
 
-  const [testLoad, setTextLoad] = useState('');
-  const [mediaFile, setMediaFile] = useState({ name: '' });
-  const [uploadFile, setUploadFile] = useState({ name: '' });
-  const [downloadFile, setDownloadFile] = useState('');
-  const [serverUrl, setServerUrl] = useState('');
+  const [testLoad, setTextLoad] = useState("");
+  const [mediaFile, setMediaFile] = useState<FileUpload>({ name: "" });
+  const [uploadFile, setUploadFile] = useState<FileUpload>({ name: "" });
+  const [downloadFile, setDownloadFile] = useState("");
+  const [serverUrl, setServerUrl] = useState("");
   const [scenario, setScenario] = useState(0);
 
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    { label: 'Select scenario', value: 0 },
-    { label: '1 - Login API', value: 1 },
-    { label: '2 - Account Form', value: 2 },
-    { label: '3 - Download File', value: 3 },
-    { label: '4 - Upload File', value: 4 },
-    { label: '5 - Media Execution', value: 5 },
+    { label: "Select scenario", value: 0 },
+    { label: "1 - Login API", value: 1 },
+    { label: "2 - Account Form", value: 2 },
+    { label: "3 - Download File", value: 3 },
+    { label: "4 - Upload File", value: 4 },
+    { label: "5 - Media Execution", value: 5 },
   ]);
 
-  const saveConfig = async () => {
-    Snackbar.show({
-      text: `Implement this: Save Config`,
-      duration: Snackbar.LENGTH_LONG,
-    });
+  const handleConfigSave = async () => {
+    try {
+
+      const config = {
+        testLoad: parseInt(testLoad),
+        mediaFile,
+        uploadFile,
+        downloadFile,
+        serverUrl,
+        scenario,
+      } as Config;
+
+      await saveConfig(config);
+
+      const strConfig = `Config Saved: ${JSON.stringify(config)}`;
+      console.log(strConfig);
+
+      Snackbar.show({
+        text: `${strConfig}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+
+    } catch (error) {
+      const strError = `Config Save error: ${JSON.stringify(error)}`;
+      console.error(strError);
+      Snackbar.show({
+        text: `${strError}`,
+        duration: Snackbar.LENGTH_LONG,
+      });
+    }
 
     await sleep();
+    if (navigation.canGoBack()) {
+      // navigation.goBack();
+      navigation.dispatch(popAction);
+    }
   }
 
   return (
     <View style={styles.container}>
       <FormInput
-        keyboardType='numeric'
+        keyboardType="numeric"
         onChangeText={setTextLoad}
         value={testLoad}
-        placeholder='Executions'
+        placeholder="Executions"
       />
       <InputFile
-        keyboardType='url'
+        keyboardType="url"
         value={mediaFile.name}
-        placeholder='Media file'
+        placeholder="Media file"
         setFile={setMediaFile}
         fileType={types.video}
       />
       <InputFile
-        keyboardType='url'
+        keyboardType="url"
         value={uploadFile.name}
-        placeholder='Upload file'
+        placeholder="Upload file"
         setFile={setUploadFile}
         fileType={types.allFiles}
       />
@@ -66,16 +99,16 @@ const ConfigScreen = () => {
       <FormInput
         onChangeText={setDownloadFile}
         value={downloadFile}
-        placeholder='Download file name'
+        placeholder="Download file name"
       />
       <FormInput
-        keyboardType='url'
+        keyboardType="url"
         onChangeText={setServerUrl}
         value={serverUrl}
-        placeholder='Server URL'
+        placeholder="Server URL"
       />
       <DropDownPicker
-        listMode='SCROLLVIEW'
+        listMode="SCROLLVIEW"
         style={configStyles.dropbox}
         multiple={false}
         open={open}
@@ -85,7 +118,7 @@ const ConfigScreen = () => {
         setItems={setItems}
         value={scenario}
         setValue={setScenario}
-        placeholder='Scenario'
+        placeholder="Scenario"
         autoScroll={true}
         closeAfterSelecting={true}
         closeOnBackPressed={true}
@@ -97,8 +130,8 @@ const ConfigScreen = () => {
       </Text>
 
       <FormButton
-        title='Save Config'
-        onPress={saveConfig}
+        title="Save Config"
+        onPress={handleConfigSave}
       />
     </View>
   );
@@ -106,15 +139,15 @@ const ConfigScreen = () => {
 
 const configStyles = StyleSheet.create({
   checksContainer: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   dropbox: {
     paddingStart: 2,
     borderWidth: 0,
     borderBottomWidth: 1,
-    borderBottomColor: 'darkgrey',
+    borderBottomColor: "darkgrey",
     marginVertical: 10,
   },
   dropboxContainer: {
@@ -122,7 +155,7 @@ const configStyles = StyleSheet.create({
     elevation: 3
   },
   dropboxPlaceholder: {
-    color: '#9e9e9e',
+    color: "#9e9e9e",
     fontSize: 18,
   },
 });

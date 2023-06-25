@@ -1,16 +1,16 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
-import Snackbar from 'react-native-snackbar';
-import { sleep } from '../../commons/Constants';
-import FormButton from '../../components/FormButton';
-import FormInput from '../../components/FormInput';
-import LabeledCheckbox from '../../components/LabeledCheckbox';
-import LabeledSwitch from '../../components/LabeledSwitch';
-import HttpClient from '../../http/services/HttpClient';
-import styles from '../../styles';
-import { ExecutionParam } from '../execution/ExecutionScreen';
+import { useNavigation, useRoute } from "@react-navigation/native";
+import React from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
+import Snackbar from "react-native-snackbar";
+import { sleep } from "../../commons/Constants";
+import FormButton from "../../components/FormButton";
+import FormInput from "../../components/FormInput";
+import LabeledCheckbox from "../../components/LabeledCheckbox";
+import LabeledSwitch from "../../components/LabeledSwitch";
+import HttpClient from "../../http/services/HttpClient";
+import styles from "../../styles";
+import { ExecutionParam } from "../execution/ExecutionScreen";
 
 type Person = { name: string, baseUrl: string };
 
@@ -19,21 +19,21 @@ const AccountScreen = () => {
   const route = useRoute();
   const { baseUrl } = route.params as ExecutionParam;
 
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [phoneCountryCode, setPhoneCountryCode] = React.useState('');
-  const [phoneNumber, setPhoneNumber] = React.useState('');
+  const [firstName, setFirstName] = React.useState("");
+  const [lastName, setLastName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [phoneCountryCode, setPhoneCountryCode] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState("");
   const [active, setActive] = React.useState(false);
   const [notification, setNotification] = React.useState(false);
-  const [username, setUsername] = React.useState('');
-  const [password, setPassword] = React.useState('');
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const [open, setOpen] = React.useState(false);
   const [items, setItems] = React.useState([
-    { label: 'Select country-code', value: '' },
-    { label: '+55 BRA', value: '+55' },
-    { label: '+1 USA', value: '+1' }
+    { label: "Select country-code", value: "" },
+    { label: "+55 BRA", value: "+55" },
+    { label: "+1 USA", value: "+1" }
   ]);
 
   const saveAccount = async () => {
@@ -75,21 +75,21 @@ const AccountScreen = () => {
         <FormInput
           onChangeText={setFirstName}
           value={firstName}
-          placeholder='first name'
+          placeholder="first name"
         />
         <FormInput
           onChangeText={setLastName}
           value={lastName}
-          placeholder='last name'
+          placeholder="last name"
         />
         <FormInput
           onChangeText={setEmail}
           value={email}
-          placeholder='email'
+          placeholder="email"
         />
 
         <DropDownPicker
-          listMode='SCROLLVIEW'
+          listMode="SCROLLVIEW"
           style={accountStyles.dropbox}
           multiple={false}
           open={open}
@@ -99,26 +99,26 @@ const AccountScreen = () => {
           setItems={setItems}
           value={phoneCountryCode}
           setValue={setPhoneCountryCode}
-          placeholder='phone country-code'
+          placeholder="phone country-code"
           autoScroll={true}
           closeAfterSelecting={true}
           closeOnBackPressed={true}
           placeholderStyle={accountStyles.dropboxPlaceholder}
         />
         <FormInput
-          keyboardType='numeric'
+          keyboardType="numeric"
           onChangeText={setPhoneNumber}
           value={phoneNumber}
-          placeholder='phone'
+          placeholder="phone"
         />
         <View style={accountStyles.checksContainer}>
           <LabeledSwitch
-            style={{ alignItems: 'flex-start' }}
+            style={{ alignItems: "flex-start" }}
             onValueChange={setActive}
             value={active}
           />
           <LabeledCheckbox
-            style={{ alignItems: 'flex-end' }}
+            style={{ alignItems: "flex-end" }}
             value={notification}
             onValueChange={setNotification}
           />
@@ -126,17 +126,17 @@ const AccountScreen = () => {
         <FormInput
           onChangeText={setUsername}
           value={username}
-          placeholder='username'
+          placeholder="username"
         />
         <FormInput
           onChangeText={setPassword}
           value={password}
-          placeholder='password'
+          placeholder="password"
           secureTextEntry={true}
         />
 
         <FormButton
-          title='Save'
+          title="Save"
           onPress={saveAccount}
         />
       </ScrollView>
@@ -146,15 +146,15 @@ const AccountScreen = () => {
 
 const accountStyles = StyleSheet.create({
   checksContainer: {
-    alignSelf: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   dropbox: {
     paddingStart: 2,
     borderWidth: 0,
     borderBottomWidth: 1,
-    borderBottomColor: 'darkgrey',
+    borderBottomColor: "darkgrey",
     marginVertical: 10,
   },
   dropboxContainer: {
@@ -162,7 +162,7 @@ const accountStyles = StyleSheet.create({
     elevation: 3
   },
   dropboxPlaceholder: {
-    color: '#9e9e9e',
+    color: "#9e9e9e",
     fontSize: 18,
   },
 });

@@ -5,7 +5,7 @@ export const LENGTH_LONG = 5000;
 export const sleep = async (millis: number = LENGTH_MEDIUM) => {
     return new Promise((resolve) =>
         setTimeout(
-            () => { resolve('result') },
+            () => { resolve("result") },
             millis
         )
     );

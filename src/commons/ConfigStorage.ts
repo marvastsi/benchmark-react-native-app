@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Config } from "../models/Config";
 
 const saveConfig = async (config: Config) => {
   try {
@@ -8,6 +9,7 @@ const saveConfig = async (config: Config) => {
     );
   } catch (error) {
     console.log(`Error: Saving APP_CONFIG`);
+    throw error;
   }
 };
 
@@ -17,12 +19,14 @@ const retrieveConfig = async (): Promise<Config> => {
     if (value !== null) {
       console.log(`APP_CONFIG: ${value}`);
     }
+
     return JSON.parse(value) as Config;
   } catch (error) {
     console.log(`Error: Retrieving APP_CONFIG`);
+    throw error;
   }
 };
 
 const APP_CONFIG = "APP_CONFIG";
 
-export { saveConfig, retrieveConfig };
+export { retrieveConfig, saveConfig };
