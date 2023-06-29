@@ -1,8 +1,9 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
+import { useNavigation } from "@react-navigation/native";
+import React, { useEffect } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
+import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
@@ -10,14 +11,10 @@ import LabeledCheckbox from "../../components/LabeledCheckbox";
 import LabeledSwitch from "../../components/LabeledSwitch";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
-import { ExecutionParam } from "../execution/ExecutionScreen";
-
-type Person = { name: string, baseUrl: string };
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-  const { baseUrl } = route.params as ExecutionParam;
+  const [baseUrl, setBaseUrl] = React.useState("");
 
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -35,6 +32,21 @@ const AccountScreen = () => {
     { label: "+55 BRA", value: "+55" },
     { label: "+1 USA", value: "+1" }
   ]);
+
+  useEffect(() => {
+    retrieveConfig()
+      .then((config) => {
+        console.log(`AccountScreen loaded: ${JSON.stringify(config)}`);
+        setBaseUrl(config.serverUrl);
+      })
+      .catch((error) => {
+        console.error(`AccountScreen loading error: ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `AccountScreen loading error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  }, []);
 
   const saveAccount = async () => {
     try {
@@ -64,6 +76,9 @@ const AccountScreen = () => {
     }
 
     await sleep();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   }
 
   return (

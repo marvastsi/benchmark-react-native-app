@@ -1,3 +1,5 @@
+import { File } from "./File";
+
 export class DownloadFile {
     file?: File;
 
@@ -9,9 +11,4 @@ export class DownloadFile {
         return this.file?.name || "file: null";
     }
 
-}
-
-interface File {
-    name: string,
-    path: string
 }

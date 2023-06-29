@@ -1,5 +1,5 @@
 import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
 import { sleep } from "../../commons/Constants";
@@ -8,17 +8,31 @@ import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
-import { ExecutionParam } from "../execution/ExecutionScreen";
+import { retrieveConfig } from "../../commons/ConfigStorage";
 
 
 const LoginScreen = () => {
-  const route = useRoute();
   const popAction = StackActions.pop(1);
   const navigation = useNavigation();
 
-  const { baseUrl } = route.params as ExecutionParam;
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [baseUrl, setBaseUrl] = React.useState("");
+
+  useEffect(() => {
+    retrieveConfig()
+      .then((config) => {
+        console.log(`LoginScreen loaded: ${JSON.stringify(config)}`);
+        setBaseUrl(config.serverUrl);
+      })
+      .catch((error) => {
+        console.error(`LoginScreen loading error: ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `LoginScreen loading error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  }, []);
 
   const handleLogin = async () => {
     try {

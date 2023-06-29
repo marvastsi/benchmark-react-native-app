@@ -1,5 +1,5 @@
 import { Text } from "@react-native-material/core";
-import { StackActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { types } from "react-native-document-picker";
@@ -7,16 +7,15 @@ import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { saveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
+import requestPermission from "../../commons/Permissions";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import InputFile from "../../components/ImputFile";
 import { Config } from "../../models/Config";
 import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
-import requestPermission from "../../commons/Permissions";
 
 const ConfigScreen = () => {
-  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
 
   const [testLoad, setTextLoad] = useState("");
@@ -59,7 +58,7 @@ const ConfigScreen = () => {
         uploadFile,
         downloadFile,
         serverUrl,
-        scenario,
+        specificScenario: scenario,
       } as Config;
 
       await saveConfig(config);
@@ -83,8 +82,7 @@ const ConfigScreen = () => {
 
     await sleep();
     if (navigation.canGoBack()) {
-      // navigation.goBack();
-      navigation.dispatch(popAction);
+      navigation.goBack();
     }
   }
 

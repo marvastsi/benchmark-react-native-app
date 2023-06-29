@@ -13,11 +13,43 @@ enum PLAYER_STATE {
 }
 
 export interface MediaPlayerProps extends ViewProps {
+    /**
+     * source={{ uri: 'https://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_10mb.mp4' }};
+     * 
+     * __
+     * 
+     * source={{ uri: 'file:///sdcard/Movies/sintel.mp4' }} 
+     * 
+     * __
+     * 
+     * source={{ uri: 'ipod-library:///path/to/music.mp3' }} 
+     * 
+     * __
+     * 
+     * source={{ uri: 'http://host-serving-a-type-different-than-the-extension.ism/manifest(format=mpd-time-csf)', type: 'mpd' }} 
+     * 
+     * __
+     * 
+     * const sintel = require('./sintel.mp4');
+     * 
+     * source={sintel}
+     * 
+     * __
+     *
+     * source={{
+     *    uri: "https://www.example.com/video.mp4",
+     *    headers: {
+     *      Authorization: 'bearer some-token-value',
+     *      'X-Custom-Header': 'some value'
+     *    }
+     *  }}
+     */
+    source: { uri?: string | undefined, headers?: { [key: string]: string } | undefined, type?: string | undefined } | number;
     onStop?(): void;
 }
 
 const MediaPlayer = (props: MediaPlayerProps) => {
-    const { onStop } = props;
+    const { source, onStop } = props;
 
     const videoPlayer = useRef<Video>(null);
     const [currentTime, setCurrentTime] = useState(0);
@@ -96,10 +128,7 @@ const MediaPlayer = (props: MediaPlayerProps) => {
             onFullscreenPlayerDidPresent={onFullscreenPlayerDidPresent}
             onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss}
             onFullscreenPlayerDidDismiss={onFullscreenPlayerDidDismiss}
-            source={{
-                uri:
-                    "https://assets.mixkit.co/videos/download/mixkit-countryside-meadow-4075.mp4",
-            }}
+            source={source}
             style={styles.mediaPlayer}
             volume={10}
         />
@@ -130,6 +159,6 @@ const styles = StyleSheet.create({
         // alignSelf: "stretch",
         // alignItems: "center",
         // marginVertical: 10,
-        marginHorizontal: 2,
+        marginHorizontal: 4,
     },
 });
