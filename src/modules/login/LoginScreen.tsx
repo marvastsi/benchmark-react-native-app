@@ -1,4 +1,4 @@
-import { useRoute } from "@react-navigation/native";
+import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
 import React from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
@@ -13,8 +13,9 @@ import { ExecutionParam } from "../execution/ExecutionScreen";
 
 const LoginScreen = () => {
   const route = useRoute();
+  const popAction = StackActions.pop(1);
+  const navigation = useNavigation();
 
-  // const { serverUrl } = route.params as Config;
   const { baseUrl } = route.params as ExecutionParam;
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -39,6 +40,10 @@ const LoginScreen = () => {
     }
 
     await sleep();
+    if (navigation.canGoBack()) {
+      // navigation.goBack();
+      navigation.dispatch(popAction);
+    }
   }
 
   return (
