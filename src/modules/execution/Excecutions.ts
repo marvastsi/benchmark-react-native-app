@@ -1,8 +1,16 @@
 import { Config } from "../../models/Config";
 
-export type Scenario = string;
+export type Scenario = number;
 
-interface IExecution {
+export const ScenarioRoutes: Map<number, string> = new Map([
+    [1, "Login"],
+    [2, "Account"],
+    [3, "Download"],
+    [4, "Upload"],
+    [5, "Media"],
+]);
+
+export interface IExecution {
     hasNext(): boolean;
 
     next(): Scenario;
@@ -14,22 +22,30 @@ interface IExecution {
     stop(): void;
 }
 
-const scenarios: Map<number, Scenario> = new Map([
-    [1, "Login"],
-    [2, "Account"],
-    [3, "Download"],
-    [4, "Upload"],
-    [5, "Media"],
-]);
+const _generateExecutions = (config: Config): Array<Scenario> => {
+    if (config.specificScenario > 0) {
+        let list = new Array<Scenario>();
+
+        for (let i = 0; i < config.testLoad; i++) {
+            list.push(config.specificScenario);
+        }
+
+        return list;
+    } else {
+        return _createRandomList(config.testLoad);
+    }
+}
 
 const _createRandomList = (lentgth: number): Array<Scenario> => {
     const first = 1;
     const last = 5;
-    let list = new Array<string>();
+    let list = new Array<Scenario>();
+
     for (let i = 0; i < lentgth; i++) {
         const key = _rand(first, last);
-        list.push(scenarios.get(key));
+        list.push(key);
     }
+
     return list;
 };
 
@@ -49,13 +65,16 @@ export class TestExecution implements IExecution {
 
     private constructor(config: Config, executions: Array<Scenario>) {
         this.config = config;
+        this._executions = executions;
     }
 
-    getIstance(config: Config): IExecution {
+    static getIstance(config: Config): IExecution {
         if (!TestExecution._instance) {
-            TestExecution._instance = new TestExecution(config, this.generateExecutions(
-                config
-            )
+            const executions = _generateExecutions(config);
+            console.log(`Executions: ${JSON.stringify(executions)}`);
+            TestExecution._instance = new TestExecution(
+                config,
+                executions
             );
         }
         return TestExecution._instance;
@@ -76,20 +95,5 @@ export class TestExecution implements IExecution {
     stop(): void {
         this._running = false;
         TestExecution._instance = null;
-    }
-
-    private generateExecutions(config: Config): Array<Scenario> {
-        if (config.specificScenario > 0) {
-            let list = new Array<Scenario>();
-            const scenario = scenarios.get(config.specificScenario);
-            if (scenario) {
-                for (let i = 0; i < config.testLoad; i++) {
-                    list.push(scenario);
-                }
-            }
-            return list;
-        } else {
-            return _createRandomList(config.testLoad);
-        }
     }
 }

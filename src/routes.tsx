@@ -13,14 +13,17 @@ import UploadScreen from "./modules/upload/UploadScreen";
 
 const AppStack = createNativeStackNavigator();
 
+export const CONFIG_ROUTE = "App Config";
+export const EXECUTIONS_ROUTE = "Green Benchmark";
+
 const RootNavigator = () => {
   return (
     <NavigationContainer>
-      <AppStack.Navigator initialRouteName="Green Benchmark" screenOptions={{
+      <AppStack.Navigator initialRouteName={CONFIG_ROUTE} screenOptions={{
         header: (props) => <CustomAppBar {...props} />
       }}>
-        <AppStack.Screen name="AppConfig" component={ConfigScreen} />
-        <AppStack.Screen name="Green Benchmark" component={ExecutionScreen} />
+        <AppStack.Screen name={CONFIG_ROUTE} component={ConfigScreen} />
+        <AppStack.Screen name={EXECUTIONS_ROUTE} component={ExecutionScreen} />
         <AppStack.Screen name="Login" component={LoginScreen} />
         <AppStack.Screen name="Account" component={AccountScreen} />
         <AppStack.Screen name="Download" component={DownloadScreen} />

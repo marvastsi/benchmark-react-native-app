@@ -1,29 +1,34 @@
-import { StackActions, useNavigation, useRoute } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import { StackActions, useNavigation } from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
+import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
 import { saveToken } from "../../commons/CredentialStorage";
+import { data } from "../../commons/data";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
-import { retrieveConfig } from "../../commons/ConfigStorage";
-
 
 const LoginScreen = () => {
   const popAction = StackActions.pop(1);
   const navigation = useNavigation();
+  const [baseUrl, setBaseUrl] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [valueFilled, setValueFilled] = useState(false);
 
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
-  const [baseUrl, setBaseUrl] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     retrieveConfig()
       .then((config) => {
         console.log(`LoginScreen loaded: ${JSON.stringify(config)}`);
+
         setBaseUrl(config.serverUrl);
+
+        setLoaded(true);
       })
       .catch((error) => {
         console.error(`LoginScreen loading error: ${JSON.stringify(error)}`);
@@ -33,6 +38,20 @@ const LoginScreen = () => {
         });
       });
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      setUsername(data.account.username);
+      setPassword(data.account.password);
+      setValueFilled(true);
+    }
+  }, [loaded])
+
+  useEffect(() => {
+    if (valueFilled) {
+      handleLogin();
+    }
+  }, [valueFilled])
 
   const handleLogin = async () => {
     try {
@@ -80,6 +99,5 @@ const LoginScreen = () => {
     </View>
   );
 };
-
 
 export default LoginScreen;

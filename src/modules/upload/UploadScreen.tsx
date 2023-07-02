@@ -1,4 +1,4 @@
-import { StackActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
@@ -11,9 +11,11 @@ import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
 
 const UploadScreen = () => {
-  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
   const [baseUrl, setBaseUrl] = useState("");
+  const [loaded, setLoaded] = useState(false);
+
+  const [fileName, setFileName] = useState("");
   const [uploadFile, setUploadFile] = useState<FileUpload>({
     name: "",
     uri: null,
@@ -24,8 +26,11 @@ const UploadScreen = () => {
     retrieveConfig()
       .then((config) => {
         console.log(`UploadScreen loaded: ${JSON.stringify(config)}`);
+
         setUploadFile(config.uploadFile);
         setBaseUrl(config.serverUrl);
+
+        setLoaded(true);
       })
       .catch((error) => {
         console.error(`UploadScreen loading error: ${JSON.stringify(error)}`);
@@ -35,6 +40,13 @@ const UploadScreen = () => {
         });
       });
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      setFileName(uploadFile.name);
+      handleUpload();
+    }
+  }, [loaded])
 
   const handleUpload = async () => {
     try {
@@ -57,17 +69,15 @@ const UploadScreen = () => {
 
     await sleep();
     if (navigation.canGoBack()) {
-      // navigation.goBack();
-      navigation.dispatch(popAction);
+      navigation.goBack();
     }
   }
-
 
   return (
     <View style={styles.container}>
       <FormInput
-        onChangeText={(text) => { }}
-        value={uploadFile.name}
+        onChangeText={setFileName}
+        value={fileName}
         placeholder="upload file"
       />
       <FormButton

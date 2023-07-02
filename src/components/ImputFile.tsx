@@ -1,13 +1,14 @@
 import { IconButton } from "@react-native-material/core";
 import React, { Dispatch, useCallback } from "react";
 import { StyleSheet, TextInput, TextInputProps, View } from "react-native";
-import DocumentPicker, { DocumentPickerResponse, types } from "react-native-document-picker";
+import DocumentPicker, { DocumentPickerResponse } from "react-native-document-picker";
 import Snackbar from "react-native-snackbar";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { File } from "../models/File";
 
 export interface InputFileProps extends TextInputProps {
     fileType?: string | string[]
-    setFile: Dispatch<DocumentPickerResponse | null | any>;
+    setFile: Dispatch<File>;
 }
 
 const InputFile = (props: InputFileProps) => {
@@ -39,7 +40,9 @@ const InputFile = (props: InputFileProps) => {
                 copyTo: "cachesDirectory"
             });
             logFilePicked(res);
-            setFile(res);            
+
+            setFile({ ...res });
+
         } catch (err) {
             handleFileError(err);
         }

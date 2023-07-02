@@ -1,9 +1,9 @@
-export type  Credentials = {
+export type Credentials = {
     username: string;
     password: string;
 }
 
-export type Token  = {
+export type Token = {
     type: string;
     value: string;
 }

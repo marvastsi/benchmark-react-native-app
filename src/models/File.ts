@@ -1,4 +1,8 @@
 export interface File {
-    name: string,
-    path: string
+    uri: string;
+    name?: string | null;
+    copyError?: string;
+    fileCopyUri?: string | null;
+    type?: string | null;
+    size?: number | null;
 }

@@ -1,10 +1,11 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
+import { data } from "../../commons/data";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import LabeledCheckbox from "../../components/LabeledCheckbox";
@@ -14,30 +15,35 @@ import styles from "../../styles";
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const [baseUrl, setBaseUrl] = React.useState("");
+  const [baseUrl, setBaseUrl] = useState("");
 
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [phoneCountryCode, setPhoneCountryCode] = React.useState("");
-  const [phoneNumber, setPhoneNumber] = React.useState("");
-  const [active, setActive] = React.useState(false);
-  const [notification, setNotification] = React.useState(false);
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneCountryCode, setPhoneCountryCode] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [active, setActive] = useState(false);
+  const [notification, setNotification] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const [open, setOpen] = React.useState(false);
-  const [items, setItems] = React.useState([
+  const [open, setOpen] = useState(false);
+  const [items, setItems] = useState([
     { label: "Select country-code", value: "" },
     { label: "+55 BRA", value: "+55" },
     { label: "+1 USA", value: "+1" }
   ]);
+  const [loaded, setLoaded] = useState(false);
+  const [valueFilled, setValueFilled] = useState(false);
 
   useEffect(() => {
     retrieveConfig()
       .then((config) => {
         console.log(`AccountScreen loaded: ${JSON.stringify(config)}`);
+
         setBaseUrl(config.serverUrl);
+
+        setLoaded(true);
       })
       .catch((error) => {
         console.error(`AccountScreen loading error: ${JSON.stringify(error)}`);
@@ -47,6 +53,27 @@ const AccountScreen = () => {
         });
       });
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      setFirstName(data.account.firstName);
+      setLastName(data.account.lastName);
+      setEmail(data.account.email);
+      setPhoneNumber(data.account.phone);
+      setPhoneCountryCode(data.account.countryCode);
+      setNotification(data.account.notifications);
+      setUsername(data.account.username);
+      setPassword(data.account.password);
+
+      setValueFilled(true);
+    }
+  }, [loaded])
+
+  useEffect(() => {
+    if (valueFilled) {
+      saveAccount();
+    }
+  }, [valueFilled])
 
   const saveAccount = async () => {
     try {

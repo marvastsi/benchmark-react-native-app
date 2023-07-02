@@ -27,4 +27,5 @@ const retrieveToken = async (): Promise<Token> => {
 
 const API_TOKEN = "API_TOKEN";
 
-export { saveToken, retrieveToken };
+export { retrieveToken, saveToken };
+

@@ -6,21 +6,22 @@ import { types } from "react-native-document-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { saveConfig } from "../../commons/ConfigStorage";
-import { sleep } from "../../commons/Constants";
+import { LENGTH_SHORT, sleep } from "../../commons/Constants";
 import requestPermission from "../../commons/Permissions";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import InputFile from "../../components/ImputFile";
 import { Config } from "../../models/Config";
-import { FileUpload } from "../../models/FileUpload";
+import { File } from "../../models/File";
+import { EXECUTIONS_ROUTE } from "../../routes";
 import styles from "../../styles";
 
 const ConfigScreen = () => {
   const navigation = useNavigation();
 
   const [testLoad, setTextLoad] = useState("");
-  const [mediaFile, setMediaFile] = useState<FileUpload>({ name: "" });
-  const [uploadFile, setUploadFile] = useState<FileUpload>({ name: "" });
+  const [mediaFile, setMediaFile] = useState<File>({ name: "", uri: "" });
+  const [uploadFile, setUploadFile] = useState<File>({ name: "", uri: "" });
   const [downloadFile, setDownloadFile] = useState("");
   const [serverUrl, setServerUrl] = useState("");
   const [scenario, setScenario] = useState(0);
@@ -51,11 +52,15 @@ const ConfigScreen = () => {
 
   const handleConfigSave = async () => {
     try {
-
       const config = {
         testLoad: parseInt(testLoad),
-        mediaFile,
-        uploadFile,
+        mediaFile: { name: mediaFile.name, path: mediaFile.fileCopyUri },
+        uploadFile: {
+          uri: uploadFile.uri,
+          fileCopyUri: uploadFile.fileCopyUri,
+          name: uploadFile.name,
+          type: uploadFile.type,
+        },
         downloadFile,
         serverUrl,
         specificScenario: scenario,
@@ -80,10 +85,9 @@ const ConfigScreen = () => {
       });
     }
 
-    await sleep();
-    if (navigation.canGoBack()) {
-      navigation.goBack();
-    }
+    await sleep(LENGTH_SHORT);
+
+    navigation.navigate(EXECUTIONS_ROUTE);
   }
 
   return (

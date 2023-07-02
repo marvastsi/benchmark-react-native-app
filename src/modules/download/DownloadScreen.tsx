@@ -1,4 +1,4 @@
-import { StackActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
@@ -9,20 +9,22 @@ import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
 
-
 const DownloadScreen = () => {
-  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
-
   const [baseUrl, setBaseUrl] = useState("");
+  const [loaded, setLoaded] = useState(false);
+
   const [filename, setFilename] = useState("");
 
   useEffect(() => {
     retrieveConfig()
       .then((config) => {
         console.log(`DownloadScreen loaded: ${JSON.stringify(config)}`);
+
         setFilename(config.downloadFile);
         setBaseUrl(config.serverUrl);
+
+        setLoaded(true);
       })
       .catch((error) => {
         console.error(`DownloadScreen loading error: ${JSON.stringify(error)}`);
@@ -32,6 +34,12 @@ const DownloadScreen = () => {
         });
       });
   }, []);
+
+  useEffect(() => {
+    if (loaded) {
+      handlDownload();
+    }
+  }, [loaded])
 
   const handlDownload = async () => {
     try {
@@ -54,8 +62,7 @@ const DownloadScreen = () => {
 
     await sleep();
     if (navigation.canGoBack()) {
-      // navigation.goBack();
-      navigation.dispatch(popAction);
+      navigation.goBack();
     }
   }
 

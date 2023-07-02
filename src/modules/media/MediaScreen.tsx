@@ -6,15 +6,14 @@ import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
 import { LENGTH_SHORT, sleep } from "../../commons/Constants";
 import MediaPlayer from "../../components/media-player/MediaPlayer";
+import { MediaFile } from "../../models/MediaFile";
 import styles from "../../styles";
-import { File } from "../../models/File";
-
 
 const MediaScreen = () => {
   const navigation = useNavigation();
-  const [mediaFile, setMediaFile] = useState<File>({ name: "", path: "" });
-
   const [loading, setLoading] = useState(false);
+
+  const [mediaFile, setMediaFile] = useState<MediaFile>({ name: "", path: "" });
 
   useEffect(() => {
     retrieveConfig()
@@ -47,7 +46,6 @@ const MediaScreen = () => {
         onStop={onStop}
       />
     </View>
-
   );
 };
 

@@ -1,9 +1,9 @@
-import { File } from "./File";
 import { FileUpload } from "./FileUpload";
+import { MediaFile } from "./MediaFile";
 
 export type Config = {
     testLoad: number;
-    mediaFile: File;
+    mediaFile: MediaFile;
     uploadFile: FileUpload;
     downloadFile: string;
     serverUrl: string
