@@ -39,7 +39,7 @@ const ConfigScreen = () => {
   useEffect(() => {
     requestPermission()
       .then(() => {
-        console.log(`Permissions Granted}`);
+        console.log(`Permissions Granted`);
       })
       .catch((error) => {
         console.error(`Permissions error: ${JSON.stringify(error)}`);

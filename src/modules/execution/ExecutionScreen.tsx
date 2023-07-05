@@ -1,5 +1,5 @@
 import { Text } from "@react-native-material/core";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Snackbar from "react-native-snackbar";
@@ -16,54 +16,60 @@ const ExecutionScreen = () => {
   const [label, setLabel] = useState("Click the button to Start");
   const [loaded, setLoaded] = useState(false);
   const [testExecution, setTestExecution] = useState<IExecution>(null);
-  
+  // const isFocused = useIsFocused();
+
   const onStart = useCallback(() => {
     if (!testExecution.isRunning()) {
       testExecution.start();
     }
-
     navigation.navigate(route);
   }, [route]);
 
   useEffect(() => {
-    retrieveConfig()
-      .then((config) => {
-
-        console.log(`ExecutionScreen loaded: ${JSON.stringify(config)}`);
-
-        setTestExecution(TestExecution.getIstance(config));
-
-        if (testExecution.hasNext()) {
-          const routeName = ScenarioRoutes.get(testExecution.next());
-          setRoute(routeName);
-
-          if (testExecution.isRunning()) {
-            setLabel("Test Execution is Running");
-          }
-        } else {
-          setLabel("Test Execution Finished!");
-          setButtonTitle("Reconfigure");
-          testExecution.stop();
-          setRoute(CONFIG_ROUTE);
-          setShowButton(false);
-        }
-        setLoaded(true);
-      })
-      .catch((error) => {
-        console.error(`ExecutionScreen loading error: ${JSON.stringify(error)}`);
-        console.error(`ExecutionScreen loading ERROR: ${error.message}`);
-        Snackbar.show({
-          text: `ExecutionScreen loading error: ${JSON.stringify(error)}`,
-          duration: Snackbar.LENGTH_LONG,
-        });
-      });
-  }, []);
-
-  useEffect(() => {
     if (loaded && testExecution.isRunning()) {
+      setLoaded(false);
       onStart();
     }
   }, [loaded])
+  
+  useFocusEffect(useCallback(() => {
+      loadConfigs();
+  }, []));
+
+  const loadConfigs = () => {
+    retrieveConfig()
+      .then((config) => {
+        const execution = TestExecution.getIstance(config)
+
+        setTestExecution(execution);
+
+        if (execution.hasNext()) {
+          console.log(`=> 3.1 - ExecutionScreen hasNEXT`);
+          const routeName = ScenarioRoutes.get(execution.next());
+
+          if (execution.isRunning()) {
+            setLabel("Test Execution is Running");
+          }
+          setRoute(routeName);
+        } else {
+          setShowButton(false);
+          setLabel("Test Execution Finished!");
+          setButtonTitle("Reconfigure");
+          execution.stop();
+          setRoute(CONFIG_ROUTE);
+        }
+
+        setLoaded(true);
+
+      })
+      .catch((error) => {
+        console.error(`ExecutionScreen loading ERROR: ${error.message} => ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `ExecutionScreen loading error: ${error.message}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  };
 
   const StartButton = () => {
     return (

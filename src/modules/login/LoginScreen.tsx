@@ -74,8 +74,8 @@ const LoginScreen = () => {
 
     await sleep();
     if (navigation.canGoBack()) {
-      // navigation.goBack();
-      navigation.dispatch(popAction);
+      navigation.goBack();
+      // navigation.dispatch(popAction);
     }
   }
 
