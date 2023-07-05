@@ -1,69 +1,117 @@
-import { useNavigation } from "@react-navigation/native";
-import React from "react";
-import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-
-const DATA = [
-  {
-    id: 1,
-    name: "Login",
-    baseUrl: "http://192.168.100.115:3000/api",
-  },
-  {
-    id: 2,
-    name: "Account",
-    baseUrl: "http://192.168.100.115:3000/api",
-  },
-  {
-    id: 3,
-    name: "Download",
-    baseUrl: "http://192.168.100.115:3000/api",
-  },
-  {
-    id: 4,
-    name: "Upload",
-    baseUrl: "http://192.168.100.115:3000/api",
-  },
-  {
-    id: 5,
-    name: "Media",
-    baseUrl: "http://192.168.100.115:3000/api",
-  },
-  {
-    id: 6,
-    name: "AppConfig",
-    baseUrl: "http://192.168.100.115:3000/api",
-  },
-];
-
-export type ExecutionParam = { id: number, name: string, baseUrl: string };
+import { Text } from "@react-native-material/core";
+import { NavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import Snackbar from "react-native-snackbar";
+import { retrieveConfig } from "../../commons/ConfigStorage";
+import { CONFIG_ROUTE } from "../../routes";
+import styles from "../../styles";
+import { IExecution, ScenarioRoutes, TestExecution } from "./Excecutions";
 
 const ExecutionScreen = () => {
-  const navigation = useNavigation();
-  const renderListItems = ({ item }: { item: ExecutionParam }) => {
+  const navigation: NavigationProp<ReactNavigation.RootParamList> = useNavigation();
+  const [route, setRoute] = useState<string>(CONFIG_ROUTE);
+  const [buttonTitle, setButtonTitle] = useState("Start");
+  const [showButton, setShowButton] = useState(true);
+  const [label, setLabel] = useState("Click the button to Start");
+  const [loaded, setLoaded] = useState(false);
+  const [testExecution, setTestExecution] = useState<IExecution>(null);
+
+  const onStart = useCallback(() => {
+    if (!testExecution.isRunning()) {
+      testExecution.start();
+    }
+    navigation.navigate(route);
+  }, [route]);
+
+  useEffect(() => {
+    if (loaded && testExecution.isRunning()) {
+      onStart();
+    }
+  }, [loaded, onStart])
+
+  useFocusEffect(useCallback(() => {
+    setLoaded(false);
+    loadConfigs();
+  }, []));
+
+  const loadConfigs = () => {
+    retrieveConfig()
+      .then((config) => {
+        const execution = TestExecution.getIstance(config)
+
+        setTestExecution(execution);
+
+        if (execution.hasNext()) {
+          const routeName = ScenarioRoutes.get(execution.next());
+
+          if (execution.isRunning()) {
+            setLabel("Test Execution is Running");
+          }
+          setRoute(routeName);
+        } else {
+          setShowButton(false);
+          setLabel("Test Execution Finished!");
+          setButtonTitle("Reconfigure");
+          execution.stop();
+          setRoute(CONFIG_ROUTE);
+        }
+
+        setLoaded(true);
+
+      })
+      .catch((error) => {
+        console.error(`ExecutionScreen loading ERROR: ${error.message} => ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `ExecutionScreen loading error: ${error.message}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  };
+
+  const StartButton = () => {
     return (
-      <Pressable
-        onPress={() => navigation.navigate(item.name, item)}
+      <TouchableOpacity
+        style={buttonStyles.formButton}
+        onPress={onStart}
       >
-        <Text
-          style={{ fontSize: 18, paddingHorizontal: 12, paddingVertical: 12 }}
-        >
-          {item.name}
-        </Text>
-        <View
-          style={{
-            borderWidth: StyleSheet.hairlineWidth,
-            borderColor: "#ccc",
-          }}
-        />
-      </Pressable>
+        <Text style={buttonStyles.buttonText}>{buttonTitle}</Text>
+      </TouchableOpacity>
     );
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: 10 }}>
-      <FlatList data={DATA} renderItem={renderListItems} />
+    <View style={[styles.container, {
+      alignSelf: "stretch",
+      alignItems: "center",
+      justifyContent: "center",
+    }]}>
+      <Text style={{ marginVertical: 100 }}>{label}</Text>
+      {showButton ? <StartButton /> : null}
     </View>
   );
 };
 
 export default ExecutionScreen;
+
+const buttonStyles = StyleSheet.create({
+  formButton: {
+    alignSelf: "auto",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 4,
+    elevation: 6,
+    height: 40,
+    backgroundColor: "teal",
+    zIndex: 0,
+    paddingHorizontal: 24
+  },
+  buttonText: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "500",
+    letterSpacing: 0.15,
+    textTransform: "capitalize",
+    color: "white",
+  },
+});

@@ -1,23 +1,59 @@
-import { useRoute } from "@react-navigation/native";
-import React from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
+import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
 import { saveToken } from "../../commons/CredentialStorage";
+import { data } from "../../commons/data";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
-import { ExecutionParam } from "../execution/ExecutionScreen";
-
 
 const LoginScreen = () => {
-  const route = useRoute();
+  const navigation = useNavigation();
+  const [baseUrl, setBaseUrl] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [valuesFilled, setValuesFilled] = useState(false);
 
-  // const { serverUrl } = route.params as Config;
-  const { baseUrl } = route.params as ExecutionParam;
-  const [username, setUsername] = React.useState("");
-  const [password, setPassword] = React.useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  useFocusEffect(useCallback(() => {
+    setLoaded(false);
+    loadConfig();
+  }, []));
+
+  useEffect(() => {
+    if (loaded) {
+      setUsername(data.account.username);
+      setPassword(data.account.password);
+      setValuesFilled(true);
+    }
+  }, [loaded])
+
+  useEffect(() => {
+    if (valuesFilled) {
+      setValuesFilled(false);
+      handleLogin();
+    }
+  }, [valuesFilled])
+
+  const loadConfig = () => {
+    retrieveConfig()
+      .then((config) => {
+        setBaseUrl(config.serverUrl);
+        setLoaded(true);
+      })
+      .catch((error) => {
+        console.error(`LoginScreen loading error: ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `LoginScreen loading error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  }
 
   const handleLogin = async () => {
     try {
@@ -32,6 +68,7 @@ const LoginScreen = () => {
         });
       }
     } catch (error) {
+      console.error(`Login Error: ${error.message} => ${JSON.stringify(error)}`);
       Snackbar.show({
         text: `Login Error: ${JSON.stringify(error)}`,
         duration: Snackbar.LENGTH_LONG,
@@ -39,6 +76,9 @@ const LoginScreen = () => {
     }
 
     await sleep();
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
   }
 
   return (
@@ -61,6 +101,5 @@ const LoginScreen = () => {
     </View>
   );
 };
-
 
 export default LoginScreen;

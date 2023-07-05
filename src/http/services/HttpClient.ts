@@ -5,6 +5,7 @@ import { Account, AccountCreated } from "../../models/Account";
 import { Credentials, Token } from "../../models/Credentials";
 import { DownloadFile } from "../../models/DownloadFile";
 import { FileUpload, FileUploadResponse } from "../../models/FileUpload";
+import { HttpException } from "../errors/HttpException";
 
 const HEADERS = {
     Accept: "application/json",
@@ -24,6 +25,7 @@ class HttpClient {
     }
 
     public login = async (credentials: Credentials): Promise<Token> => {
+        console.log(`${this.baseUrl}: Login: ${JSON.stringify(credentials)}`);
         try {
             const response = await this.api.post(
                 "/login",
@@ -37,6 +39,7 @@ class HttpClient {
     }
 
     public saveAccount = async (account: Account): Promise<AccountCreated> => {
+        console.log(`Save Account: ${JSON.stringify(account)}`);
         try {
             const response = await this.api.post(
                 "/accounts",

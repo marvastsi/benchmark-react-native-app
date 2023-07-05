@@ -16,9 +16,6 @@ const saveConfig = async (config: Config) => {
 const retrieveConfig = async (): Promise<Config> => {
   try {
     const value = await AsyncStorage.getItem(APP_CONFIG);
-    if (value !== null) {
-      console.log(`APP_CONFIG: ${value}`);
-    }
 
     return JSON.parse(value) as Config;
   } catch (error) {

@@ -1,27 +1,26 @@
 import { Text } from "@react-native-material/core";
-import { StackActions, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { types } from "react-native-document-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { saveConfig } from "../../commons/ConfigStorage";
-import { sleep } from "../../commons/Constants";
+import requestPermission from "../../commons/Permissions";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import InputFile from "../../components/ImputFile";
 import { Config } from "../../models/Config";
-import { FileUpload } from "../../models/FileUpload";
+import { File } from "../../models/File";
+import { EXECUTIONS_ROUTE } from "../../routes";
 import styles from "../../styles";
-import requestPermission from "../../commons/Permissions";
 
 const ConfigScreen = () => {
-  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
 
   const [testLoad, setTextLoad] = useState("");
-  const [mediaFile, setMediaFile] = useState<FileUpload>({ name: "" });
-  const [uploadFile, setUploadFile] = useState<FileUpload>({ name: "" });
+  const [mediaFile, setMediaFile] = useState<File>({ name: "", uri: "" });
+  const [uploadFile, setUploadFile] = useState<File>({ name: "", uri: "" });
   const [downloadFile, setDownloadFile] = useState("");
   const [serverUrl, setServerUrl] = useState("");
   const [scenario, setScenario] = useState(0);
@@ -39,7 +38,7 @@ const ConfigScreen = () => {
   useEffect(() => {
     requestPermission()
       .then(() => {
-        console.log(`Permissions Granted}`);
+        console.log(`Permissions Granted`);
       })
       .catch((error) => {
         console.error(`Permissions error: ${JSON.stringify(error)}`);
@@ -52,14 +51,18 @@ const ConfigScreen = () => {
 
   const handleConfigSave = async () => {
     try {
-
       const config = {
         testLoad: parseInt(testLoad),
-        mediaFile,
-        uploadFile,
+        mediaFile: { name: mediaFile.name, path: mediaFile.fileCopyUri },
+        uploadFile: {
+          uri: uploadFile.uri,
+          fileCopyUri: uploadFile.fileCopyUri,
+          name: uploadFile.name,
+          type: uploadFile.type,
+        },
         downloadFile,
         serverUrl,
-        scenario,
+        specificScenario: scenario,
       } as Config;
 
       await saveConfig(config);
@@ -81,11 +84,7 @@ const ConfigScreen = () => {
       });
     }
 
-    await sleep();
-    if (navigation.canGoBack()) {
-      // navigation.goBack();
-      navigation.dispatch(popAction);
-    }
+    navigation.navigate(EXECUTIONS_ROUTE);
   }
 
   return (

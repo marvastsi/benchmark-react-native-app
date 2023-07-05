@@ -1,10 +1,11 @@
 import { FileUpload } from "./FileUpload";
+import { MediaFile } from "./MediaFile";
 
 export type Config = {
     testLoad: number;
-    mediaFile: string;
+    mediaFile: MediaFile;
     uploadFile: FileUpload;
     downloadFile: string;
     serverUrl: string
-    scenario: number;
+    specificScenario: number;
 }

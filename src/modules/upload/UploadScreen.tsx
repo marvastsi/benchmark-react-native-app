@@ -1,5 +1,5 @@
-import { StackActions, useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
@@ -11,30 +11,52 @@ import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
 
 const UploadScreen = () => {
-  const popAction = StackActions.pop(1);
   const navigation = useNavigation();
   const [baseUrl, setBaseUrl] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [valuesFilled, setValuesFilled] = useState(false);
+
+  const [fileName, setFileName] = useState("");
   const [uploadFile, setUploadFile] = useState<FileUpload>({
     name: "",
     uri: null,
     type: null,
   });
 
+  useFocusEffect(useCallback(() => {
+    setLoaded(false);
+    loadConfig();
+  }, []));
+
   useEffect(() => {
+    if (loaded) {
+      setFileName(uploadFile.name);
+      setValuesFilled(true);
+    }
+  }, [loaded])
+
+  useEffect(() => {
+    if (valuesFilled) {
+      setValuesFilled(false);
+      handleUpload();
+    }
+  }, [valuesFilled])
+
+  const loadConfig = () => {
     retrieveConfig()
       .then((config) => {
-        console.log(`UploadScreen loaded: ${JSON.stringify(config)}`);
         setUploadFile(config.uploadFile);
         setBaseUrl(config.serverUrl);
+        setLoaded(true);
       })
       .catch((error) => {
-        console.error(`UploadScreen loading error: ${JSON.stringify(error)}`);
+        console.error(`UploadScreen loading error: ${error.message} => ${JSON.stringify(error)}`);
         Snackbar.show({
           text: `UploadScreen loading error: ${JSON.stringify(error)}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
-  }, []);
+  };
 
   const handleUpload = async () => {
     try {
@@ -48,7 +70,7 @@ const UploadScreen = () => {
         });
       }
     } catch (error) {
-      console.error(`Upload error: ${JSON.stringify(error)}`);
+      console.error(`Upload error: ${error.message} => ${JSON.stringify(error)}`);
       Snackbar.show({
         text: `Upload Error: ${JSON.stringify(error)}`,
         duration: Snackbar.LENGTH_LONG,
@@ -57,17 +79,15 @@ const UploadScreen = () => {
 
     await sleep();
     if (navigation.canGoBack()) {
-      // navigation.goBack();
-      navigation.dispatch(popAction);
+      navigation.goBack();
     }
   }
-
 
   return (
     <View style={styles.container}>
       <FormInput
-        onChangeText={(text) => { }}
-        value={uploadFile.name}
+        onChangeText={setFileName}
+        value={fileName}
         placeholder="upload file"
       />
       <FormButton

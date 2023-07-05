@@ -2,7 +2,7 @@ export type FileUpload = {
     uri?: string | undefined | null
     fileCopyUri?: string | undefined | null
     name?: string | undefined | null
-    type?: string | undefined |null
+    type?: string | undefined | null
 }
 
 export type FileUploadResponse = {
