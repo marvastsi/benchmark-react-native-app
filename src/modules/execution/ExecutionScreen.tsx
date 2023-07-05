@@ -16,7 +16,6 @@ const ExecutionScreen = () => {
   const [label, setLabel] = useState("Click the button to Start");
   const [loaded, setLoaded] = useState(false);
   const [testExecution, setTestExecution] = useState<IExecution>(null);
-  // const isFocused = useIsFocused();
 
   const onStart = useCallback(() => {
     if (!testExecution.isRunning()) {
@@ -27,13 +26,13 @@ const ExecutionScreen = () => {
 
   useEffect(() => {
     if (loaded && testExecution.isRunning()) {
-      setLoaded(false);
       onStart();
     }
-  }, [loaded])
-  
+  }, [loaded, onStart])
+
   useFocusEffect(useCallback(() => {
-      loadConfigs();
+    setLoaded(false);
+    loadConfigs();
   }, []));
 
   const loadConfigs = () => {
@@ -44,7 +43,6 @@ const ExecutionScreen = () => {
         setTestExecution(execution);
 
         if (execution.hasNext()) {
-          console.log(`=> 3.1 - ExecutionScreen hasNEXT`);
           const routeName = ScenarioRoutes.get(execution.next());
 
           if (execution.isRunning()) {

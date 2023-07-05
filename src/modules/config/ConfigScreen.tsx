@@ -6,7 +6,6 @@ import { types } from "react-native-document-picker";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { saveConfig } from "../../commons/ConfigStorage";
-import { LENGTH_SHORT, sleep } from "../../commons/Constants";
 import requestPermission from "../../commons/Permissions";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
@@ -84,8 +83,6 @@ const ConfigScreen = () => {
         duration: Snackbar.LENGTH_LONG,
       });
     }
-
-    await sleep(LENGTH_SHORT);
 
     navigation.navigate(EXECUTIONS_ROUTE);
   }

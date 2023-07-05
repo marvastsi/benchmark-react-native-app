@@ -1,6 +1,6 @@
 import { ActivityIndicator } from "@react-native-material/core";
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useState } from "react";
 import { Text, View } from "react-native";
 import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
@@ -15,11 +15,17 @@ const MediaScreen = () => {
 
   const [mediaFile, setMediaFile] = useState<MediaFile>({ name: "", path: "" });
 
-  useEffect(() => {
+  useFocusEffect(useCallback(() => {
+    setLoading(true);
+    loadConfig();
+  }, []));
+
+  const loadConfig = () => {
     retrieveConfig()
       .then((config) => {
         console.log(`MediaScreen loaded: ${JSON.stringify(config)}`);
         setMediaFile(config.mediaFile);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(`MediaScreen loading error: ${JSON.stringify(error)}`);
@@ -27,8 +33,9 @@ const MediaScreen = () => {
           text: `MediaScreen loading error: ${JSON.stringify(error)}`,
           duration: Snackbar.LENGTH_LONG,
         });
+        setLoading(false);
       });
-  }, []);
+  };
 
   const onStop = async () => {
     await sleep(LENGTH_SHORT);

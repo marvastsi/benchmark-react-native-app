@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
@@ -34,25 +34,12 @@ const AccountScreen = () => {
     { label: "+1 USA", value: "+1" }
   ]);
   const [loaded, setLoaded] = useState(false);
-  const [valueFilled, setValueFilled] = useState(false);
+  const [valuesFilled, setValuesFilled] = useState(false);
 
-  useEffect(() => {
-    retrieveConfig()
-      .then((config) => {
-        console.log(`AccountScreen loaded: ${JSON.stringify(config)}`);
-
-        setBaseUrl(config.serverUrl);
-
-        setLoaded(true);
-      })
-      .catch((error) => {
-        console.error(`AccountScreen loading error: ${JSON.stringify(error)}`);
-        Snackbar.show({
-          text: `AccountScreen loading error: ${JSON.stringify(error)}`,
-          duration: Snackbar.LENGTH_LONG,
-        });
-      });
-  }, []);
+  useFocusEffect(useCallback(() => {
+    setLoaded(false);
+    loadConfig();
+  }, []));
 
   useEffect(() => {
     if (loaded) {
@@ -61,21 +48,37 @@ const AccountScreen = () => {
       setEmail(data.account.email);
       setPhoneNumber(data.account.phone);
       setPhoneCountryCode(data.account.countryCode);
+      setActive(data.account.active);
       setNotification(data.account.notifications);
       setUsername(data.account.username);
       setPassword(data.account.password);
-
-      setValueFilled(true);
+      setValuesFilled(true);
     }
   }, [loaded])
 
   useEffect(() => {
-    if (valueFilled) {
-      saveAccount();
+    if (valuesFilled) {
+      setValuesFilled(false);
+      handleAccountSave();
     }
-  }, [valueFilled])
+  }, [valuesFilled])
 
-  const saveAccount = async () => {
+  const loadConfig = () => {
+    retrieveConfig()
+      .then((config) => {
+        setBaseUrl(config.serverUrl);
+        setLoaded(true);
+      })
+      .catch((error) => {
+        console.error(`AccountScreen loading error: ${error.message} => ${JSON.stringify(error)}`);
+        Snackbar.show({
+          text: `AccountScreen loading error: ${JSON.stringify(error)}`,
+          duration: Snackbar.LENGTH_LONG,
+        });
+      });
+  };
+
+  const handleAccountSave = async () => {
     try {
       const client = new HttpClient(baseUrl);
       const accountCreated = await client.saveAccount({
@@ -95,7 +98,7 @@ const AccountScreen = () => {
         duration: Snackbar.LENGTH_LONG,
       });
     } catch (error) {
-
+      console.error(`Account Create Error: ${error.message} => ${JSON.stringify(error)}`);
       Snackbar.show({
         text: `Account Create Error: ${JSON.stringify(error)}`,
         duration: Snackbar.LENGTH_LONG,
@@ -179,7 +182,7 @@ const AccountScreen = () => {
 
         <FormButton
           title="Save"
-          onPress={saveAccount}
+          onPress={handleAccountSave}
         />
       </ScrollView>
     </View>

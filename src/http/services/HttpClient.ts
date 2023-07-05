@@ -25,7 +25,7 @@ class HttpClient {
     }
 
     public login = async (credentials: Credentials): Promise<Token> => {
-        console.log(`Login: ${JSON.stringify(credentials)}`);
+        console.log(`${this.baseUrl}: Login: ${JSON.stringify(credentials)}`);
         try {
             const response = await this.api.post(
                 "/login",

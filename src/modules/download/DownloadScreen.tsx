@@ -1,5 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import React, { useCallback, useEffect, useState } from "react";
 import { View } from "react-native";
 import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
@@ -13,33 +13,44 @@ const DownloadScreen = () => {
   const navigation = useNavigation();
   const [baseUrl, setBaseUrl] = useState("");
   const [loaded, setLoaded] = useState(false);
+  const [valuesFilled, setValuesFilled] = useState(false);
 
   const [filename, setFilename] = useState("");
 
+  useFocusEffect(useCallback(() => {
+    setLoaded(false);
+    loadConfig();
+  }, []));
+
   useEffect(() => {
+    if (loaded) {
+      // setFilename("file.png");
+      setValuesFilled(true);
+    }
+  }, [loaded])
+
+  useEffect(() => {
+    if (valuesFilled) {
+      setValuesFilled(false);
+      handlDownload();
+    }
+  }, [valuesFilled])
+
+  const loadConfig = () => {
     retrieveConfig()
       .then((config) => {
-        console.log(`DownloadScreen loaded: ${JSON.stringify(config)}`);
-
         setFilename(config.downloadFile);
         setBaseUrl(config.serverUrl);
-
         setLoaded(true);
       })
       .catch((error) => {
-        console.error(`DownloadScreen loading error: ${JSON.stringify(error)}`);
+        console.error(`DownloadScreen loading error: ${error.message} => ${JSON.stringify(error)}`);
         Snackbar.show({
           text: `DownloadScreen loading error: ${JSON.stringify(error)}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
-  }, []);
-
-  useEffect(() => {
-    if (loaded) {
-      handlDownload();
-    }
-  }, [loaded])
+  };
 
   const handlDownload = async () => {
     try {
@@ -53,7 +64,7 @@ const DownloadScreen = () => {
         });
       }
     } catch (error) {
-      console.error(`Download error: ${JSON.stringify(error)}`);
+      console.error(`Download error: ${error.message} => ${JSON.stringify(error)}`);
       Snackbar.show({
         text: `Download Error: ${JSON.stringify(error)}`,
         duration: Snackbar.LENGTH_LONG,
