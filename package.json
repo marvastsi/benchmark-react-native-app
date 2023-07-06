@@ -27,7 +27,8 @@
     "react-native-screens": "^3.20.0",
     "react-native-snackbar": "^2.6.2",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-video": "^6.0.0-alpha.6"
+    "react-native-video": "^6.0.0-alpha.6",
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

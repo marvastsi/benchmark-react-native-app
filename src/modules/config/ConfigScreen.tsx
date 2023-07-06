@@ -14,6 +14,8 @@ import { Config } from "../../models/Config";
 import { File } from "../../models/File";
 import { EXECUTIONS_ROUTE } from "../../routes";
 import styles from "../../styles";
+import validateField from "../../commons/validator/Validator";
+import { sleep } from "../../commons/Constants";
 
 const ConfigScreen = () => {
   const navigation = useNavigation();
@@ -84,14 +86,37 @@ const ConfigScreen = () => {
       });
     }
 
+    await sleep(3000);
+
     navigation.navigate(EXECUTIONS_ROUTE);
   }
+
+  /////// validations SATRT
+  const [executionsError, setExecutionsError] = useState();
+  const [donwaloadFileError, setDonwaloadFileError] = useState();
+  const [serverUrlError, setServerUrlError] = useState();
+  const [formValid, setFormValid] = useState(false);
+
+  useEffect(() => {
+    if (donwaloadFileError || executionsError || serverUrlError) {
+      console.log("not valid -> " + executionsError);
+      setFormValid(false);
+    } else {
+      console.log("valid -> " + executionsError);
+      setFormValid(true);
+    }
+  }, [executionsError, donwaloadFileError, serverUrlError]);
+  /////// END validations
 
   return (
     <View style={styles.container}>
       <FormInput
         keyboardType="numeric"
-        onChangeText={setTextLoad}
+        onChangeText={value => setTextLoad(value.trim())}
+        onBlur={(event) => {
+          setExecutionsError(validateField("executions", testLoad))
+        }}
+        error={executionsError}
         value={testLoad}
         placeholder="Executions"
       />
@@ -109,17 +134,24 @@ const ConfigScreen = () => {
         setFile={setUploadFile}
         fileType={types.allFiles}
       />
-
       <FormInput
-        onChangeText={setDownloadFile}
         value={downloadFile}
         placeholder="Download file name"
+        onChangeText={value => setDownloadFile(value.trim())}
+        onBlur={(event) => {
+          setDonwaloadFileError(validateField("downloadFile", downloadFile))
+        }}
+        error={donwaloadFileError}
       />
       <FormInput
         keyboardType="url"
-        onChangeText={setServerUrl}
         value={serverUrl}
         placeholder="Server URL"
+        onChangeText={value => setServerUrl(value.trim())}
+        onBlur={(event) => {
+          setServerUrlError(validateField("serverUrl", serverUrl))
+        }}
+        error={serverUrlError}
       />
       <DropDownPicker
         listMode="SCROLLVIEW"
@@ -146,6 +178,7 @@ const ConfigScreen = () => {
       <FormButton
         title="Save Config"
         onPress={handleConfigSave}
+        disabled={!formValid}
       />
     </View>
   );

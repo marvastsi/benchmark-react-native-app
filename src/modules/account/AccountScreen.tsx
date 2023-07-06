@@ -131,6 +131,7 @@ const AccountScreen = () => {
           onChangeText={setEmail}
           value={email}
           placeholder="email"
+          keyboardType="email-address"
         />
 
         <DropDownPicker

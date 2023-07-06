@@ -1,26 +1,49 @@
-import React from "react";
-import { StyleSheet, TextInput, TextInputProps } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, TextInput, TextInputProps, View } from "react-native";
 
-const FormInput = (props: TextInputProps) => {
-    const [isFocused, setIsFocused] = React.useState(false);
+export interface FormInputProps extends TextInputProps {
+    error?: string;
+}
+
+const FormInput = (props: FormInputProps) => {
+    const [isFocused, setIsFocused] = useState(false);
     const handleFocus = () => setIsFocused(true);
     const handleBlur = () => setIsFocused(false);
 
     return (
-        <TextInput
-            {...props}
-            style={[styles.textInput, isFocused ?
-                { borderBottomWidth: 2, borderBottomColor: "teal" }
-                : { borderBottomWidth: 1, borderBottomColor: "darkgrey", }]}
-            placeholderTextColor="#9e9e9e"
-            autoComplete="off"
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-        />
+        <View style={styles.base}>
+            <TextInput
+                {...props}
+                style={[styles.textInput,
+                !props.error ?
+                    isFocused ? styles.inputFocus : styles.inputBlur
+                    : styles.inputError
+                ]}
+                placeholderTextColor="#9e9e9e"
+                autoComplete="off"
+                onFocus={(event) => {
+                    if (props.onFocus) {
+                        props.onFocus(event);
+                    }
+                    handleFocus();
+                }}
+                onBlur={(event) => {
+                    if (props.onBlur) {
+                        props.onBlur(event);
+                    }
+                    handleBlur();
+                }}
+            />
+            {props.error && <Text style={{ color: "red" }}>{props.error}</Text>}
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    base: {
+        alignItems: "center",
+        alignSelf: "stretch",
+    },
     textInput: {
         height: 46,
         alignSelf: "stretch",
@@ -31,6 +54,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         alignItems: "flex-start",
     },
+    inputFocus: { borderBottomWidth: 2, borderBottomColor: "teal" },
+    inputBlur: { borderBottomWidth: 1, borderBottomColor: "darkgrey", },
+    inputError: { borderBottomWidth: 1, borderBottomColor: "red", },
 });
 
 export default FormInput;

@@ -1,0 +1,58 @@
+const requiredString = {
+  presence: {
+    allowEmpty: false,
+    message: "is required"
+  },
+};
+
+const constraints = {
+  loginPassword: requiredString,
+  loginUsername: requiredString,
+  firstName: requiredString,
+  email: {
+    presence: {
+      allowEmpty: false,
+      message: "is required"
+    },
+    email: true
+  },
+  phoneNumber: {
+    presence: { message: "is required" },
+    format: {
+      pattern: "^[0-9]{11}$",
+      message: '^Invalid phone number',
+    },
+  },
+  countryCode: requiredString,
+  username: requiredString,
+  password: {
+    presence: {
+      allowEmpty: false,
+      message: "is required"
+    },
+    length: {
+      minimum: 5,
+      message: '^Your password must be at least 5 characters'
+    }
+  },
+
+  executions: {
+    presence: { allowEmpty: false },
+    numericality: {
+      onlyInteger: true,
+      greaterThanOrEqualTo: 10,
+    }
+  },
+  downloadFile: requiredString,
+  serverUrl: {
+    presence: {
+      allowEmpty: false,
+      message: "is required"
+    },
+    url: {
+      allowLocal: true
+    },
+  }
+};
+
+export default constraints;

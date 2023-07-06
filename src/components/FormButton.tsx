@@ -5,10 +5,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 type ButtonProps = {
     onPress: any;
     title: string;
+    disabled?: boolean | null | undefined;
 }
 
 const FormButton = (props: ButtonProps) => {
-    const { onPress, title } = props;
+    const { onPress, title, disabled } = props;
     const [loading, setLoading] = React.useState(false);
 
     return (
@@ -21,13 +22,14 @@ const FormButton = (props: ButtonProps) => {
             />
             <TouchableOpacity
                 style={[styles.formButton,
-                loading ? { backgroundColor: "#0AC3B2", }
-                    : { backgroundColor: "teal", }]}
+                (disabled || loading) ? { opacity: 0.5 } : { opacity: 1 }
+                ]}
                 onPress={async (event) => {
                     setLoading(true);
                     await onPress(event);
                     setLoading(false);
                 }}
+                disabled={disabled}
             >
                 <Text style={styles.buttonText}>{title}</Text>
             </TouchableOpacity>
