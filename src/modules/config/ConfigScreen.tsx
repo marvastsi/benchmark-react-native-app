@@ -86,7 +86,7 @@ const ConfigScreen = () => {
       });
     }
 
-    await sleep(3000);
+    await sleep(1000);
 
     navigation.navigate(EXECUTIONS_ROUTE);
   }
@@ -99,10 +99,8 @@ const ConfigScreen = () => {
 
   useEffect(() => {
     if (donwaloadFileError || executionsError || serverUrlError) {
-      console.log("not valid -> " + executionsError);
       setFormValid(false);
     } else {
-      console.log("valid -> " + executionsError);
       setFormValid(true);
     }
   }, [executionsError, donwaloadFileError, serverUrlError]);

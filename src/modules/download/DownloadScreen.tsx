@@ -8,6 +8,7 @@ import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
+import validateField from "../../commons/validator/Validator";
 
 const DownloadScreen = () => {
   const navigation = useNavigation();
@@ -15,7 +16,7 @@ const DownloadScreen = () => {
   const [loaded, setLoaded] = useState(false);
   const [valuesFilled, setValuesFilled] = useState(false);
 
-  const [filename, setFilename] = useState("");
+  const [fileName, setFileName] = useState("");
 
   useFocusEffect(useCallback(() => {
     setLoaded(false);
@@ -39,7 +40,7 @@ const DownloadScreen = () => {
   const loadConfig = () => {
     retrieveConfig()
       .then((config) => {
-        setFilename(config.downloadFile);
+        setFileName(config.downloadFile);
         setBaseUrl(config.serverUrl);
         setLoaded(true);
       })
@@ -55,7 +56,7 @@ const DownloadScreen = () => {
   const handlDownload = async () => {
     try {
       const client = new HttpClient(baseUrl);
-      const result = await client.download(filename);
+      const result = await client.download(fileName);
 
       if (result) {
         Snackbar.show({
@@ -77,17 +78,36 @@ const DownloadScreen = () => {
     }
   }
 
+  /////// validations SATRT
+  const [fileNameError, setFileNameError] = useState();
+
+  const [formValid, setFormValid] = useState(false);
+
+  useEffect(() => {
+    if (fileNameError) {
+      setFormValid(false);
+    } else {
+      setFormValid(true);
+    }
+  }, [fileNameError]);
+  /////// END validations
+
   return (
     <View style={styles.container}>
       <FormInput
-        onChangeText={setFilename}
-        value={filename}
+        value={fileName}
         placeholder="download file"
+        onChangeText={value => setFileName(value.trim())}
+        onBlur={(event) => {
+          setFileNameError(validateField("downloadFile", fileName))
+        }}
+        error={fileNameError}
       />
 
       <FormButton
         title="Download"
         onPress={handlDownload}
+        disabled={!formValid}
       />
     </View>
   );

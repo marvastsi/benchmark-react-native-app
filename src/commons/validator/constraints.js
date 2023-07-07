@@ -8,6 +8,7 @@ const requiredString = {
 const constraints = {
   loginPassword: requiredString,
   loginUsername: requiredString,
+
   firstName: requiredString,
   email: {
     presence: {
@@ -44,6 +45,7 @@ const constraints = {
     }
   },
   downloadFile: requiredString,
+  uploadFile: requiredString,
   serverUrl: {
     presence: {
       allowEmpty: false,

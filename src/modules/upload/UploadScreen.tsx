@@ -9,6 +9,7 @@ import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
+import validateField from "../../commons/validator/Validator";
 
 const UploadScreen = () => {
   const navigation = useNavigation();
@@ -83,16 +84,35 @@ const UploadScreen = () => {
     }
   }
 
+  /////// validations SATRT
+  const [fileNameError, setFileNameError] = useState();
+
+  const [formValid, setFormValid] = useState(false);
+
+  useEffect(() => {
+    if (fileNameError) {
+      setFormValid(false);
+    } else {
+      setFormValid(true);
+    }
+  }, [fileNameError]);
+  /////// END validations
+
   return (
     <View style={styles.container}>
       <FormInput
-        onChangeText={setFileName}
         value={fileName}
         placeholder="upload file"
+        onChangeText={value => setFileName(value.trim())}
+        onBlur={(event) => {
+          setFileNameError(validateField("uploadFile", fileName))
+        }}
+        error={fileNameError}
       />
       <FormButton
         title="Upload"
         onPress={handleUpload}
+        disabled={!formValid}
       />
     </View>
   );

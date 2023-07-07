@@ -1,11 +1,12 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
 import { data } from "../../commons/data";
+import validateField from "../../commons/validator/Validator";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import LabeledCheckbox from "../../components/LabeledCheckbox";
@@ -111,6 +112,28 @@ const AccountScreen = () => {
     }
   }
 
+  /////// validations SATRT
+  const [firstNameError, setFirstNameError] = useState();
+  const [emailError, setEmailError] = useState();
+  const [countryCodeError, setCountryCodeError] = useState();
+  const [phoneNumberError, setPhoneNumberError] = useState();
+  const [usernameError, setUsernameError] = useState();
+  const [passwordError, setPasswordError] = useState();
+
+  const [formValid, setFormValid] = useState(false);
+
+  useEffect(() => {
+    if (firstNameError || emailError || countryCodeError
+      || phoneNumberError || usernameError || passwordError
+    ) {
+      setFormValid(false);
+    } else {
+      setFormValid(true);
+    }
+  }, [firstNameError, emailError, countryCodeError,
+    phoneNumberError, usernameError, passwordError]);
+  /////// END validations
+
   return (
     <View style={styles.scroolContainer}>
       <ScrollView
@@ -118,9 +141,13 @@ const AccountScreen = () => {
         contentContainerStyle={styles.scroolContent}
       >
         <FormInput
-          onChangeText={setFirstName}
           value={firstName}
           placeholder="first name"
+          onChangeText={value => setFirstName(value.trim())}
+          onBlur={(event) => {
+            setFirstNameError(validateField("firstName", firstName))
+          }}
+          error={firstNameError}
         />
         <FormInput
           onChangeText={setLastName}
@@ -128,13 +155,20 @@ const AccountScreen = () => {
           placeholder="last name"
         />
         <FormInput
-          onChangeText={setEmail}
           value={email}
           placeholder="email"
           keyboardType="email-address"
+          onChangeText={value => setEmail(value.trim())}
+          onBlur={(event) => {
+            setEmailError(validateField("email", email))
+          }}
+          error={emailError}
         />
 
         <DropDownPicker
+          onChangeValue={() => {
+            setCountryCodeError(validateField("countryCode", phoneCountryCode))
+          }}
           listMode="SCROLLVIEW"
           style={accountStyles.dropbox}
           multiple={false}
@@ -151,11 +185,16 @@ const AccountScreen = () => {
           closeOnBackPressed={true}
           placeholderStyle={accountStyles.dropboxPlaceholder}
         />
+        {countryCodeError && <Text style={{ color: "red" }}>{countryCodeError}</Text>}
         <FormInput
           keyboardType="numeric"
-          onChangeText={setPhoneNumber}
           value={phoneNumber}
           placeholder="phone"
+          onChangeText={value => setPhoneNumber(value.trim())}
+          onBlur={(event) => {
+            setPhoneNumberError(validateField("phoneNumber", phoneNumber))
+          }}
+          error={phoneNumberError}
         />
         <View style={accountStyles.checksContainer}>
           <LabeledSwitch
@@ -170,20 +209,29 @@ const AccountScreen = () => {
           />
         </View>
         <FormInput
-          onChangeText={setUsername}
           value={username}
           placeholder="username"
+          onChangeText={value => setUsername(value.trim())}
+          onBlur={(event) => {
+            setUsernameError(validateField("username", username))
+          }}
+          error={usernameError}
         />
         <FormInput
-          onChangeText={setPassword}
           value={password}
           placeholder="password"
           secureTextEntry={true}
+          onChangeText={value => setPassword(value.trim())}
+          onBlur={(event) => {
+            setPasswordError(validateField("password", password))
+          }}
+          error={passwordError}
         />
 
         <FormButton
           title="Save"
           onPress={handleAccountSave}
+          disabled={!formValid}
         />
       </ScrollView>
     </View>

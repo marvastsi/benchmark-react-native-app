@@ -6,6 +6,7 @@ import { retrieveConfig } from "../../commons/ConfigStorage";
 import { sleep } from "../../commons/Constants";
 import { saveToken } from "../../commons/CredentialStorage";
 import { data } from "../../commons/data";
+import validateField from "../../commons/validator/Validator";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
@@ -81,22 +82,46 @@ const LoginScreen = () => {
     }
   }
 
+  /////// validations SATRT
+  const [usernameError, setUsernameError] = useState();
+  const [passwordError, setPasswordError] = useState();
+
+  const [formValid, setFormValid] = useState(false);
+
+  useEffect(() => {
+    if (usernameError || passwordError) {
+      setFormValid(false);
+    } else {
+      setFormValid(true);
+    }
+  }, [usernameError, passwordError]);
+  /////// END validations
+
   return (
     <View style={styles.container}>
       <FormInput
-        onChangeText={setUsername}
         value={username}
         placeholder="username"
+        onChangeText={value => setUsername(value.trim())}
+        onBlur={(event) => {
+          setUsernameError(validateField("loginUsername", username))
+        }}
+        error={usernameError}
       />
       <FormInput
-        onChangeText={setPassword}
         value={password}
         placeholder="password"
         secureTextEntry={true}
+        onChangeText={value => setPassword(value.trim())}
+        onBlur={(event) => {
+          setPasswordError(validateField("loginPassword", password))
+        }}
+        error={passwordError}
       />
       <FormButton
         title="Login"
         onPress={handleLogin}
+        disabled={!formValid}
       />
     </View>
   );
