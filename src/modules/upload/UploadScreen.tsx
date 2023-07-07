@@ -10,6 +10,7 @@ import HttpClient from "../../http/services/HttpClient";
 import { FileUpload } from "../../models/FileUpload";
 import styles from "../../styles";
 import validateField from "../../commons/validator/Validator";
+import { HttpException } from "../../http/errors/HttpException";
 
 const UploadScreen = () => {
   const navigation = useNavigation();
@@ -51,9 +52,8 @@ const UploadScreen = () => {
         setLoaded(true);
       })
       .catch((error) => {
-        console.error(`UploadScreen loading error: ${error.message} => ${JSON.stringify(error)}`);
         Snackbar.show({
-          text: `UploadScreen loading error: ${JSON.stringify(error)}`,
+          text: `UploadScreen loading error: ${error.message}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
@@ -66,14 +66,14 @@ const UploadScreen = () => {
 
       if (result) {
         Snackbar.show({
-          text: `Upload Success: ${JSON.stringify(result)}`,
+          text: `Upload executed ${result.name}`,
           duration: Snackbar.LENGTH_LONG,
         });
       }
     } catch (error) {
-      console.error(`Upload error: ${error.message} => ${JSON.stringify(error)}`);
+      let err = error as HttpException;
       Snackbar.show({
-        text: `Upload Error: ${JSON.stringify(error)}`,
+        text: `${err.status}: Upload failed`,
         duration: Snackbar.LENGTH_LONG,
       });
     }
@@ -102,7 +102,7 @@ const UploadScreen = () => {
     <View style={styles.container}>
       <FormInput
         value={fileName}
-        placeholder="upload file"
+        placeholder="File to Upload"
         onChangeText={value => setFileName(value.trim())}
         onBlur={(event) => {
           setFileNameError(validateField("uploadFile", fileName))

@@ -9,6 +9,7 @@ import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
 import validateField from "../../commons/validator/Validator";
+import { HttpException } from "../../http/errors/HttpException";
 
 const DownloadScreen = () => {
   const navigation = useNavigation();
@@ -45,9 +46,8 @@ const DownloadScreen = () => {
         setLoaded(true);
       })
       .catch((error) => {
-        console.error(`DownloadScreen loading error: ${error.message} => ${JSON.stringify(error)}`);
         Snackbar.show({
-          text: `DownloadScreen loading error: ${JSON.stringify(error)}`,
+          text: `DownloadScreen loading error: ${error.message}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
@@ -60,14 +60,14 @@ const DownloadScreen = () => {
 
       if (result) {
         Snackbar.show({
-          text: `Download Success: ${JSON.stringify(result)}`,
+          text: `Download Executed: ${result.toString()}`,
           duration: Snackbar.LENGTH_LONG,
         });
       }
     } catch (error) {
-      console.error(`Download error: ${error.message} => ${JSON.stringify(error)}`);
+      let err = error as HttpException;
       Snackbar.show({
-        text: `Download Error: ${JSON.stringify(error)}`,
+        text: `${err.status}: Download failed`,
         duration: Snackbar.LENGTH_LONG,
       });
     }

@@ -13,6 +13,7 @@ import LabeledCheckbox from "../../components/LabeledCheckbox";
 import LabeledSwitch from "../../components/LabeledSwitch";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
+import { HttpException } from "../../http/errors/HttpException";
 
 const AccountScreen = () => {
   const navigation = useNavigation();
@@ -71,9 +72,8 @@ const AccountScreen = () => {
         setLoaded(true);
       })
       .catch((error) => {
-        console.error(`AccountScreen loading error: ${error.message} => ${JSON.stringify(error)}`);
         Snackbar.show({
-          text: `AccountScreen loading error: ${JSON.stringify(error)}`,
+          text: `AccountScreen loading error: ${error.message}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
@@ -95,13 +95,13 @@ const AccountScreen = () => {
       })
 
       Snackbar.show({
-        text: `Account Saved: ${accountCreated.accountId}`,
+        text: `Account created with id: ${accountCreated.accountId}`,
         duration: Snackbar.LENGTH_LONG,
       });
     } catch (error) {
-      console.error(`Account Create Error: ${error.message} => ${JSON.stringify(error)}`);
+      let err = error as HttpException
       Snackbar.show({
-        text: `Account Create Error: ${JSON.stringify(error)}`,
+        text: `${err.status}: Account create failed`,
         duration: Snackbar.LENGTH_LONG,
       });
     }

@@ -7,6 +7,7 @@ import DropDownPicker from "react-native-dropdown-picker";
 import Snackbar from "react-native-snackbar";
 import { saveConfig } from "../../commons/ConfigStorage";
 import requestPermission from "../../commons/Permissions";
+import validateField from "../../commons/validator/Validator";
 import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import InputFile from "../../components/ImputFile";
@@ -14,8 +15,6 @@ import { Config } from "../../models/Config";
 import { File } from "../../models/File";
 import { EXECUTIONS_ROUTE } from "../../routes";
 import styles from "../../styles";
-import validateField from "../../commons/validator/Validator";
-import { sleep } from "../../commons/Constants";
 
 const ConfigScreen = () => {
   const navigation = useNavigation();
@@ -85,8 +84,6 @@ const ConfigScreen = () => {
         duration: Snackbar.LENGTH_LONG,
       });
     }
-
-    await sleep(1000);
 
     navigation.navigate(EXECUTIONS_ROUTE);
   }

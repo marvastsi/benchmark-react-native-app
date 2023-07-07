@@ -97,10 +97,6 @@ const MediaPlayer = (props: MediaPlayerProps) => {
 
     const onError = (error: any) => Alert.alert("Error loading video", error);
 
-    const dismissFullScreen = () => { };
-
-    const presentFullScreen = () => { };
-
     const onFullScreen = () => {
         setIsFullScreen(isFullScreen);
         if (screenType == ResizeMode.contain) {
@@ -110,6 +106,8 @@ const MediaPlayer = (props: MediaPlayerProps) => {
         }
     };
 
+    const dismissFullScreen = () => { };
+    const presentFullScreen = () => { };
     const onFullscreenPlayerWillPresent = () => { };
     const onFullscreenPlayerDidPresent = () => { };
     const onFullscreenPlayerWillDismiss = () => { };
@@ -131,34 +129,20 @@ const MediaPlayer = (props: MediaPlayerProps) => {
             source={source}
             style={styles.mediaPlayer}
             volume={10}
+            controls={true}
         />
-
     );
 };
 
 export default MediaPlayer;
 
 const styles = StyleSheet.create({
-    container: {
-        // flex: 1,
-    },
-    toolbar: {
-        // marginTop: 30,
-        // backgroundColor: "white",
-        // padding: 10,
-        // borderRadius: 5,
-    },
     mediaPlayer: {
         position: "absolute",
         top: 0,
         left: 0,
         bottom: 0,
         right: 0,
-
-        // justifyContent: "center",
-        // alignSelf: "stretch",
-        // alignItems: "center",
-        // marginVertical: 10,
         marginHorizontal: 4,
     },
 });

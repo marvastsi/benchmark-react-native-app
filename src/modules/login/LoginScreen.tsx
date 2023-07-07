@@ -11,6 +11,7 @@ import FormButton from "../../components/FormButton";
 import FormInput from "../../components/FormInput";
 import HttpClient from "../../http/services/HttpClient";
 import styles from "../../styles";
+import { HttpException } from "../../http/errors/HttpException";
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -48,9 +49,8 @@ const LoginScreen = () => {
         setLoaded(true);
       })
       .catch((error) => {
-        console.error(`LoginScreen loading error: ${JSON.stringify(error)}`);
         Snackbar.show({
-          text: `LoginScreen loading error: ${JSON.stringify(error)}`,
+          text: `LoginScreen loading error: ${error.message}`,
           duration: Snackbar.LENGTH_LONG,
         });
       });
@@ -64,14 +64,14 @@ const LoginScreen = () => {
       if (token) {
         saveToken(token);
         Snackbar.show({
-          text: `Login Success: ${JSON.stringify(token)}`,
+          text: `Welcome: ${username}`,
           duration: Snackbar.LENGTH_LONG,
         });
       }
     } catch (error) {
-      console.error(`Login Error: ${error.message} => ${JSON.stringify(error)}`);
+      let err = error as HttpException;
       Snackbar.show({
-        text: `Login Error: ${JSON.stringify(error)}`,
+        text: `${err.status}: Login failed`,
         duration: Snackbar.LENGTH_LONG,
       });
     }

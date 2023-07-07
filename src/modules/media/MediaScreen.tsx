@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 import Snackbar from "react-native-snackbar";
 import { retrieveConfig } from "../../commons/ConfigStorage";
 import { LENGTH_SHORT, sleep } from "../../commons/Constants";
-import MediaPlayer from "../../components/media-player/MediaPlayer";
+import MediaPlayer from "../../components/MediaPlayer";
 import { MediaFile } from "../../models/MediaFile";
 import styles from "../../styles";
 
@@ -23,14 +23,12 @@ const MediaScreen = () => {
   const loadConfig = () => {
     retrieveConfig()
       .then((config) => {
-        console.log(`MediaScreen loaded: ${JSON.stringify(config)}`);
         setMediaFile(config.mediaFile);
         setLoading(false);
       })
       .catch((error) => {
-        console.error(`MediaScreen loading error: ${JSON.stringify(error)}`);
         Snackbar.show({
-          text: `MediaScreen loading error: ${JSON.stringify(error)}`,
+          text: `MediaScreen loading error: ${error.message}`,
           duration: Snackbar.LENGTH_LONG,
         });
         setLoading(false);
@@ -38,6 +36,10 @@ const MediaScreen = () => {
   };
 
   const onStop = async () => {
+    Snackbar.show({
+      text: `Media Executed`,
+      duration: Snackbar.LENGTH_LONG,
+    });
     await sleep(LENGTH_SHORT);
     if (navigation.canGoBack()) {
       navigation.goBack();

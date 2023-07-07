@@ -25,7 +25,6 @@ class HttpClient {
     }
 
     public login = async (credentials: Credentials): Promise<Token> => {
-        console.log(`${this.baseUrl}: Login: ${JSON.stringify(credentials)}`);
         try {
             const response = await this.api.post(
                 "/login",
@@ -39,7 +38,6 @@ class HttpClient {
     }
 
     public saveAccount = async (account: Account): Promise<AccountCreated> => {
-        console.log(`Save Account: ${JSON.stringify(account)}`);
         try {
             const response = await this.api.post(
                 "/accounts",
@@ -99,7 +97,6 @@ class HttpClient {
     private makeFile = async (filePath: string, data: string) => {
         try {
             await fs.writeFile(filePath, data, "base64");
-            console.log("written to file");
         } catch (error) {
             console.log(error);
         }

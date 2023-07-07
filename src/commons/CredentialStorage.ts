@@ -3,7 +3,6 @@ import { Token } from "../models/Credentials";
 
 const saveToken = async (token: Token) => {
     try {
-        console.log(`saveToken => ${JSON.stringify(token)}`);
         await AsyncStorage.setItem(
             API_TOKEN,
             token.value

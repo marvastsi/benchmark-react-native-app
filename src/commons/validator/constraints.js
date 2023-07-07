@@ -21,7 +21,7 @@ const constraints = {
     presence: { message: "is required" },
     format: {
       pattern: "^[0-9]{11}$",
-      message: '^Invalid phone number',
+      message: '^Not a valid phone number',
     },
   },
   countryCode: requiredString,
@@ -33,7 +33,7 @@ const constraints = {
     },
     length: {
       minimum: 5,
-      message: '^Your password must be at least 5 characters'
+      message: '^Password must be >5 characters'
     }
   },
 
