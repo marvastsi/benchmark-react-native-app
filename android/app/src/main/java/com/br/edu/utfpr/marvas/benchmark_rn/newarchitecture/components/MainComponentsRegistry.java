@@ -1,4 +1,4 @@
-package com.app_rn.newarchitecture.components;
+package  br.edu.utfpr.marvas.benchmark_rn.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

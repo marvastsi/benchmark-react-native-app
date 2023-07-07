@@ -1,4 +1,4 @@
-package com.app_rn;
+package br.edu.utfpr.marvas.benchmark_rn;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -12,7 +12,7 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "app_rn";
+    return "benchmark_rn";
   }
 
   /**
