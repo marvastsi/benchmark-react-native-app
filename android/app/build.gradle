@@ -129,6 +129,7 @@ def reactNativeArchitectures() {
 }
 
 android {
+    namespace "br.edu.utfpr.marvas.benchmark_rn"
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion

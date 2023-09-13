@@ -57,5 +57,13 @@ Step - 2
 $ ./gradlew bundleRelease
 ```
 
+### Testing the release build on your device ([Testing Release Build](https://reactnative.dev/docs/0.69/signed-apk-android#testing-the-release-build-of-your-app))
+
+
+```
+$ npx react-native run-android --variant=release
+```
+
+
 ___
 DOC: https://reactnative.dev/docs/0.69/signed-apk-android
