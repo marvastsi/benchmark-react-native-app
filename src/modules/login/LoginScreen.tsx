@@ -82,7 +82,7 @@ const LoginScreen = () => {
     }
   }
 
-  /////// validations SATRT
+  /////// validations START
   const [usernameError, setUsernameError] = useState();
   const [passwordError, setPasswordError] = useState();
 

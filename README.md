@@ -64,6 +64,18 @@ $ ./gradlew bundleRelease
 $ npx react-native run-android --variant=release
 ```
 
+In case of error like this:
+```
+* What went wrong:
+Execution failed for task ':app:installRelease'.
+  > java.util.concurrent.ExecutionException: com.android.builder.testing.api.DeviceException: com.android.ddmlib.InstallException: INSTALL_FAILED_UPDATE_INCOMPATIBLE: Existing package br.edu.utfpr.marvas.benchmark_rn signatures do not match newer version; ignoring!
+```
+
+Uninstall old instances of the app with different versions:
+
+```
+adb uninstall "br.edu.utfpr.marvas.benchmark_rn"
+```
 
 ___
 DOC: https://reactnative.dev/docs/0.69/signed-apk-android
