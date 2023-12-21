@@ -19,7 +19,7 @@ import styles from "../../styles";
 const ConfigScreen = () => {
   const navigation = useNavigation();
 
-  const [testLoad, setTextLoad] = useState("");
+  const [testLoad, setTestLoad] = useState("");
   const [mediaFile, setMediaFile] = useState<File>({ name: "", uri: "" });
   const [uploadFile, setUploadFile] = useState<File>({ name: "", uri: "" });
   const [downloadFile, setDownloadFile] = useState("");
@@ -107,7 +107,7 @@ const ConfigScreen = () => {
     <View style={styles.container}>
       <FormInput
         keyboardType="numeric"
-        onChangeText={value => setTextLoad(value.trim())}
+        onChangeText={value => setTestLoad(value.trim())}
         onBlur={(event) => {
           setExecutionsError(validateField("executions", testLoad))
         }}

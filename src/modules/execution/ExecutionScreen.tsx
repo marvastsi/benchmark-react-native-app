@@ -1,5 +1,5 @@
 import { Text } from "@react-native-material/core";
-import { NavigationProp, useFocusEffect, useIsFocused, useNavigation } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useCallback, useEffect, useState } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Snackbar from "react-native-snackbar";
