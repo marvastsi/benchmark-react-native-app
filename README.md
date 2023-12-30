@@ -57,7 +57,7 @@ Step - 2
 $ ./gradlew bundleRelease
 ```
 
-### Testing the release build on your device ([Testing Release Build](https://reactnative.dev/docs/0.69/signed-apk-android#testing-the-release-build-of-your-app))
+### Testing the release build on your device ([Testing Release Build]( https://reactnative-archive-august-2023.netlify.app/docs/0.69/signed-apk-android#testing-the-release-build-of-your-app))
 
 
 ```
@@ -77,5 +77,12 @@ Uninstall old instances of the app with different versions:
 adb uninstall "br.edu.utfpr.marvas.benchmark_rn"
 ```
 
-___
-DOC: https://reactnative.dev/docs/0.69/signed-apk-android
+
+DOC (0.69):
+
+https://reactnative-archive-august-2023.netlify.app/docs/0.69/environment-setup?guide=native
+
+https://reactnative-archive-august-2023.netlify.app/docs/0.69/signed-apk-android
+
+---
+DOC All Versions: https://reactnative.dev/versions
