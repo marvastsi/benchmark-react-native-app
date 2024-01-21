@@ -71,7 +71,6 @@ export class TestExecution implements IExecution {
     static getIstance(config: Config): IExecution {
         if (!TestExecution._instance) {
             const executions = _generateExecutions(config);
-            console.log(`Executions: ${JSON.stringify(executions)}`);
             TestExecution._instance = new TestExecution(
                 config,
                 executions
