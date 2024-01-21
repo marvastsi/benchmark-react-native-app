@@ -129,6 +129,10 @@ def reactNativeArchitectures() {
 }
 
 android {
+    // packagingOptions {
+    //     // exclude ARMEABI native so file, ARMEABI has been removed in NDK r17.
+    //     exclude "lib/armeabi/**"
+    // }
     namespace "br.edu.utfpr.marvas.benchmark_rn"
     ndkVersion rootProject.ext.ndkVersion
 

@@ -54,6 +54,10 @@ $ ./gradlew clean
 ```
 Step - 2
 ```
+$ npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle
+```
+Step - 3
+```
 $ ./gradlew bundleRelease
 ```
 
@@ -62,6 +66,9 @@ $ ./gradlew bundleRelease
 
 ```
 $ npx react-native run-android --variant=release
+
+## OR
+$ cd android/ & ./gradlew installRelease
 ```
 
 In case of error like this:
